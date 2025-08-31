@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Admin Dashboard - EventHive</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3a0ca3;
+      --accent: #f72585;
+      --success: #4cc9f0;
+      --warning: #f9c74f;
+      --danger: #f94144;
+      --dark: #2b2d42;
+      --light: #f8f9fa;
+      --gray-100: #f8f9fa;
+      --gray-200: #e9ecef;
+      --gray-300: #dee2e6;
+      --gray-400: #ced4da;
+      --gray-500: #adb5bd;
+      --gray-600: #6c757d;
+      --gray-700: #495057;
+      --gray-800: #343a40;
+      --gray-900: #212529;
+      --sidebar-width: 260px;
+      --border-radius: 12px;
+      --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.05), 0 6px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f5f7fb;
+      color: var(--gray-800);
+      line-height: 1.6;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: linear-gradient(to bottom, var(--primary), var(--secondary));
+      color: white;
+      padding: 1.5rem 1rem;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      transition: var(--transition);
+      z-index: 1000;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding: 0 0.5rem;
+    }
+
+    .sidebar-header .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-icon {
+      margin-right: 10px;
+      font-size: 1.8rem;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      margin-top: 2rem;
+    }
+
+    .sidebar-menu li {
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      padding: 0.8rem 1rem;
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+    }
+
+    .sidebar-menu a:hover, .sidebar-menu a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .sidebar-menu i {
+      margin-right: 0.8rem;
+      font-size: 1.2rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 1.5rem 2rem;
+      transition: var(--transition);
+    }
+
+    /* Top Navigation */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      background-color: white;
+      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+    }
+
+    .page-title h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .page-title p {
+      color: var(--gray-600);
+      font-size: 0.9rem;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .add-event-btn {
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .add-event-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background-color: white;
+      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 2rem;
+      box-shadow: var(--card-shadow);
+    }
+
+    .filters select, .filters input {
+      padding: 0.7rem 1rem;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--border-radius);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+    }
+
+    .filter-btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .filter-btn:hover {
+      background-color: var(--secondary);
+    }
+
+    /* Event Grid */
+    .event-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .event-card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      transition: var(--transition);
+    }
+
+    .event-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .event-image-wrap {
+      position: relative;
+      height: 180px;
+      overflow: hidden;
+    }
+
+    .event-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+
+    .event-card:hover .event-img {
+      transform: scale(1.05);
+    }
+
+    .event-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background-color: var(--primary);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .event-info {
+      padding: 1.5rem;
+    }
+
+    .event-info h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.8rem;
+      color: var(--dark);
+    }
+
+    .date {
+      color: var(--gray-600);
+      font-size: 0.9rem;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .date i {
+      color: var(--primary);
+    }
+
+    .desc {
+      color: var(--gray-700);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .location {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--gray-600);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.2rem;
+    }
+
+    .status {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status.published {
+      background-color: rgba(76, 201, 240, 0.2);
+      color: var(--success);
+    }
+
+    .status.unpublished {
+      background-color: rgba(249, 65, 68, 0.2);
+      color: var(--danger);
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.8rem;
+    }
+
+    .actions a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem;
+      border-radius: 8px;
+      color: var(--gray-600);
+      text-decoration: none;
+      transition: var(--transition);
+      font-size: 0.9rem;
+    }
+
+    .btn-edit:hover {
+      background-color: rgba(67, 97, 238, 0.1);
+      color: var(--primary);
+    }
+
+    .btn-delete:hover {
+      background-color: rgba(249, 65, 68, 0.1);
+      color: var(--danger);
+    }
+
+    .btn-attendees:hover {
+      background-color: rgba(76, 201, 240, 0.1);
+      color: var(--success);
+    }
+
+    /* Profile Section */
+    .profile-section {
+      position: relative;
+    }
+
+    .profile-pic {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      object-fit: cover;
+      cursor: pointer;
+      border: 2px solid var(--gray-300);
+      transition: var(--transition);
+    }
+
+    .profile-pic:hover {
+      border-color: var(--primary);
+    }
+
+    .upload-form {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background-color: white;
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+      z-index: 100;
+      width: 250px;
+      margin-top: 0.5rem;
+    }
+
+    .upload-form input {
+      width: 100%;
+      margin-bottom: 0.8rem;
+      padding: 0.5rem;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+    }
+
+    .upload-form button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 2rem;
+    }
+
+    .pagination a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      text-decoration: none;
+      color: var(--gray-700);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .pagination a:hover {
+      background-color: var(--gray-200);
+    }
+
+    .pagination a.active {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+        width: 0;
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .sidebar.active {
+        transform: translateX(0);
+        width: var(--sidebar-width);
+      }
+      
+      .menu-toggle {
+        display: block;
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        z-index: 1100;
+        background-color: var(--primary);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .top-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .filters {
+        flex-wrap: wrap;
+      }
+      
+      .event-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">🎩</span>
+        EventHive Admin
+      </div>
+    </div>
+    
+    <ul class="sidebar-menu">
+      <li><a href="{{ url_for('admin_dashboard') }}" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="{{ url_for('add_event') }}"><i class="fas fa-calendar-plus"></i> Add Event</a></li>
+      <li><a href="#"><i class="fas fa-users"></i> Attendees</a></li>
+      <li><a href="#"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+      <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </div>
+  
+  <div class="menu-toggle">
+    <i class="fas fa-bars"></i>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Top Navigation -->
+    <div class="top-nav">
+      <div class="page-title">
+        <h1>Event Management</h1>
+        <p>Manage and monitor all your events in one place</p>
+      </div>
+      
+      <div class="nav-right">
+        <a href="{{ url_for('add_event') }}" class="add-event-btn">
+          <i class="fas fa-plus"></i> Add Event
+        </a>
+        
+        <div class="profile-section">
+          <img src="{{ url_for('static', filename='uploads/' ~ (session.get('profile_pic') or 'default.png')) }}" class="profile-pic" onclick="toggleUploadForm()">
+          <form action="{{ url_for('upload_profile_pic') }}" method="POST" enctype="multipart/form-data" class="upload-form" id="uploadForm">
+            <input type="file" name="profile_pic" accept="image/*" required>
+            <button type="submit">Upload</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Filters -->
+    <form method="GET" action="{{ url_for('admin_dashboard') }}" class="filters">
+      <select name="category">
+        <option value="">All Categories</option>
+        <option value="Music" {% if request.args.get('category') == 'Music' %}selected{% endif %}>Music</option>
+        <option value="Sports" {% if request.args.get('category') == 'Sports' %}selected{% endif %}>Sports</option>
+        <option value="Exhibition" {% if request.args.get('category') == 'Exhibition' %}selected{% endif %}>Exhibition</option>
+      </select>
+      
+      <select name="date">
+        <option value="">All Dates</option>
+        <option value="today" {% if request.args.get('date') == 'today' %}selected{% endif %}>Today</option>
+        <option value="week" {% if request.args.get('date') == 'week' %}selected{% endif %}>This Week</option>
+      </select>
+      
+      <button type="submit" class="filter-btn">Apply Filters</button>
+    </form>
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+            <div class="flash-message {{ category }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    
+    <!-- Event Grid -->
+    <div class="event-grid">
+      {% for event in events %}
+      <div class="event-card">
+        <div class="event-image-wrap">
+          <img src="{{ url_for('static', filename='images/' ~ (event.image if event.image else 'default.jpg')) }}" alt="Event Image" class="event-img">
+          {% if event.category %}
+            <span class="event-badge">{{ event.category }}</span>
+          {% endif %}
+        </div>
+        <div class="event-info">
+          <h3>{{ event.name }}</h3>
+          <p class="date"><i class="far fa-calendar-alt"></i> {{ event.start_date }} - {{ event.end_date }}</p>
+          <p class="desc">{{ event.description }}</p>
+          <p class="location"><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
+          <div class="status-bar">
+            <span class="status {{ 'published' if event.publish_status else 'unpublished' }}">
+              {{ "Published" if event.publish_status else "Unpublished" }}
+            </span>
+            <a href="{{ url_for('toggle_publish', event_id=event.id) }}" class="toggle-publish">
+              {{ "Unpublish" if event.publish_status else "Publish" }}
+            </a>
+          </div>
+          <div class="actions">
+            <a href="{{ url_for('edit_event', event_id=event.id) }}" class="btn-edit"><i class="fas fa-edit"></i> Edit</a>
+            <a href="{{ url_for('delete_event', event_id=event.id) }}" class="btn-delete" onclick="return confirm('Are you sure you want to delete this event?');"><i class="fas fa-trash"></i> Delete</a>
+            <a href="{{ url_for('view_attendees', event_id=event.id) }}" class="btn-attendees"><i class="fas fa-users"></i> Attendees</a>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div class="no-events">
+        <p>No events found. <a href="{{ url_for('add_event') }}">Create your first event</a></p>
+      </div>
+      {% endfor %}
+    </div>
+    
+    <!-- Pagination would go here if implemented -->
+  </div>
+
+  <script>
+    function toggleUploadForm() {
+      const form = document.getElementById('uploadForm');
+      form.style.display = form.style.display === 'block' ? 'none' : 'block';
+    }
+    
+    // Close the upload form when clicking outside
+    document.addEventListener('click', function(event) {
+      const form = document.getElementById('uploadForm');
+      const profilePic = document.querySelector('.profile-pic');
+      
+      if (form.style.display === 'block' && event.target !== profilePic && !profilePic.contains(event.target)) {
+        form.style.display = 'none';
+      }
+    });
+    
+    // Mobile menu toggle
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    
+    if (menuToggle) {
+      menuToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('active');
+      });
+    }
+    
+    // Auto-hide flash messages after 5 seconds
+    setTimeout(() => {
+      const flashMessages = document.querySelectorAll('.flash-message');
+      flashMessages.forEach(msg => {
+        msg.style.opacity = '0';
+        setTimeout(() => msg.remove(), 1000);
+      });
+    }, 5000);
+  </script>
+</body>
+</html>

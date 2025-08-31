@@ -1,0 +1,134 @@
+/* Body & Slider */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Montserrat', Arial, sans-serif;
+  overflow: hidden;
+}
+
+.slider {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.slider .slide {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  animation: fade 20s infinite;
+}
+
+.slider .slide:nth-child(1) { background-image: url("../images/bg1.jpg"); animation-delay: 0s; }
+.slider .slide:nth-child(2) { background-image: url("../images/bg2.jpg"); animation-delay: 5s; }
+.slider .slide:nth-child(3) { background-image: url("../images/bg3.jpg"); animation-delay: 10s; }
+.slider .slide:nth-child(4) { background-image: url("../images/bg4.jpg"); animation-delay: 15s; }
+
+@keyframes fade {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  25% { opacity: 1; }
+  35% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* Overlay */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+  z-index: 10;
+  backdrop-filter: blur(6px);
+}
+
+/* Logo */
+.welcome-logo {
+  font-size: 3.5rem;
+  margin-bottom: 0.7rem;
+  background: linear-gradient(90deg, #fff, #bfcfff 60%, #ffb86b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Heading */
+h1 {
+  font-size: 3.2rem;
+  margin-bottom: 10px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  color: #fff;
+  text-shadow: 0 4px 18px rgba(0,0,0,0.25);
+}
+.brand {
+  color: #ffb86b;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+/* Subheading */
+.welcome-sub {
+  font-size: 1.5rem;
+  color: #bfcfff;
+  margin-bottom: 2.2rem;
+  font-weight: 600;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.13);
+}
+
+/* Buttons */
+.buttons .btn {
+  background: linear-gradient(90deg, #3D52A0, #7091E6 80%, #ffb86b 100%);
+  background-size: 200% 200%;
+  color: white;
+  padding: 15px 38px;
+  margin: 10px;
+  border-radius: 30px;
+  font-weight: 800;
+  letter-spacing: 0.7px;
+  text-decoration: none;
+  font-size: 1.18rem;
+  transition: all 0.5s, background-position 0.8s;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  position: relative;
+  z-index: 20;
+  border: none;
+}
+
+/* Hover with smooth gradient movement */
+.buttons .btn:hover {
+  background-position: 100% 50%;
+  transform: translateY(-4px) scale(1.07);
+  box-shadow: 0 14px 32px rgba(0,0,0,0.22);
+}
+
+/* Gradient Shift Keyframes */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  h1 { font-size: 2.1rem; }
+  .welcome-sub { font-size: 1.1rem; }
+  .welcome-logo { font-size: 2.2rem; }
+  .buttons .btn { padding: 12px 18px; font-size: 1rem; }
+}

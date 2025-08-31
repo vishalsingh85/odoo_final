@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - EventHive</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3a0ca3;
+      --accent: #f72585;
+      --success: #4cc9f0;
+      --warning: #f9c74f;
+      --danger: #f94144;
+      --dark: #2b2d42;
+      --light: #f8f9fa;
+      --gray-100: #f8f9fa;
+      --gray-200: #e9ecef;
+      --gray-300: #dee2e6;
+      --gray-400: #ced4da;
+      --gray-500: #adb5bd;
+      --gray-600: #6c757d;
+      --gray-700: #495057;
+      --gray-800: #343a40;
+      --gray-900: #212529;
+      --sidebar-width: 260px;
+      --border-radius: 12px;
+      --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.05), 0 6px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f5f7fb;
+      color: var(--gray-800);
+      line-height: 1.6;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: linear-gradient(to bottom, var(--primary), var(--secondary));
+      color: white;
+      padding: 1.5rem 1rem;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      transition: var(--transition);
+      z-index: 1000;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding: 0 0.5rem;
+    }
+
+    .sidebar-header .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-icon {
+      margin-right: 10px;
+      font-size: 1.8rem;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      margin-top: 2rem;
+    }
+
+    .sidebar-menu li {
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      padding: 0.8rem 1rem;
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+    }
+
+    .sidebar-menu a:hover, .sidebar-menu a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .sidebar-menu i {
+      margin-right: 0.8rem;
+      font-size: 1.2rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 1.5rem 2rem;
+      transition: var(--transition);
+    }
+
+    /* Top Navigation */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      background-color: white;
+      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+    }
+
+    .welcome-section h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.3rem;
+    }
+
+    .welcome-section p {
+      color: var(--gray-600);
+      font-size: 0.9rem;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .search-form {
+      position: relative;
+    }
+
+    .search-input {
+      padding: 0.7rem 1rem 0.7rem 2.5rem;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--border-radius);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+      width: 250px;
+      transition: var(--transition);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-500);
+    }
+
+    .profile-section {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      position: relative;
+    }
+
+    .loyalty-badge {
+      background: linear-gradient(to right, var(--warning), var(--accent));
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .profile-pic {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      object-fit: cover;
+      cursor: pointer;
+      border: 2px solid var(--gray-300);
+      transition: var(--transition);
+    }
+
+    .profile-pic:hover {
+      border-color: var(--primary);
+    }
+
+    .upload-form {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background-color: white;
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+      z-index: 100;
+      width: 250px;
+      margin-top: 0.5rem;
+    }
+
+    .upload-form input {
+      width: 100%;
+      margin-bottom: 0.8rem;
+      padding: 0.5rem;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+    }
+
+    .upload-form button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    /* Stats Section */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .stat-title {
+      font-size: 0.9rem;
+      color: var(--gray-600);
+      font-weight: 600;
+    }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .icon-events {
+      background-color: rgba(67, 97, 238, 0.2);
+      color: var(--primary);
+    }
+
+    .icon-bookings {
+      background-color: rgba(76, 201, 240, 0.2);
+      color: var(--success);
+    }
+
+    .icon-points {
+      background-color: rgba(249, 199, 79, 0.2);
+      color: var(--warning);
+    }
+
+    .icon-favorites {
+      background-color: rgba(247, 37, 133, 0.2);
+      color: var(--accent);
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-change {
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .change-positive {
+      color: #10b981;
+    }
+
+    .change-negative {
+      color: #ef4444;
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background-color: white;
+      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 2rem;
+      box-shadow: var(--card-shadow);
+      flex-wrap: wrap;
+    }
+
+    .filters select, .filters input {
+      padding: 0.7rem 1rem;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--border-radius);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+    }
+
+    .filter-btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .filter-btn:hover {
+      background-color: var(--secondary);
+    }
+
+    /* Event Grid */
+    .event-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .event-card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      transition: var(--transition);
+    }
+
+    .event-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .event-image-wrap {
+      position: relative;
+      height: 180px;
+      overflow: hidden;
+    }
+
+    .event-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+
+    .event-card:hover .event-img {
+      transform: scale(1.05);
+    }
+
+    .event-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background-color: var(--primary);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .event-info {
+      padding: 1.5rem;
+    }
+
+    .event-info h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.8rem;
+      color: var(--dark);
+    }
+
+    .date {
+      color: var(--gray-600);
+      font-size: 0.9rem;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .date i {
+      color: var(--primary);
+    }
+
+    .desc {
+      color: var(--gray-700);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .location {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--gray-600);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .book-btn {
+      width: 100%;
+      padding: 0.8rem;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .book-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+    }
+
+    .book-btn:disabled {
+      background: var(--gray-400);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 2rem;
+    }
+
+    .pagination a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      text-decoration: none;
+      color: var(--gray-700);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .pagination a:hover {
+      background-color: var(--gray-200);
+    }
+
+    .pagination a.active {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--gray-500);
+      grid-column: 1 / -1;
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: var(--gray-300);
+    }
+
+    .empty-text {
+      margin-bottom: 1.5rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+        width: 0;
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .sidebar.active {
+        transform: translateX(0);
+        width: var(--sidebar-width);
+      }
+      
+      .menu-toggle {
+        display: block;
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        z-index: 1100;
+        background-color: var(--primary);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .top-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .nav-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .search-form {
+        width: 100%;
+      }
+      
+      .search-input {
+        width: 100%;
+      }
+      
+      .filters {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .filters select, .filters input {
+        width: 100%;
+      }
+      
+      .event-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .event-card {
+      animation: fadeIn 0.5s ease-out;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">🎩</span>
+        EventHive
+      </div>
+    </div>
+    
+    <ul class="sidebar-menu">
+      <li><a href="{{ url_for('dashboard') }}" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="{{ url_for('my_bookings') }}"><i class="fas fa-ticket-alt"></i> My Bookings</a></li>
+      <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </div>
+  
+  <div class="menu-toggle">
+    <i class="fas fa-bars"></i>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Top Navigation -->
+    <div class="top-nav">
+      <div class="welcome-section">
+        <h1>Welcome back, {{ username }}! 👋</h1>
+        <p>Discover and book your next unforgettable experience</p>
+      </div>
+      
+      <div class="nav-right">
+        <form action="{{ url_for('dashboard') }}" method="get" class="search-form">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" name="search" placeholder="Search events..." value="{{ search }}" class="search-input">
+        </form>
+        
+        <div class="profile-section">
+          <div class="loyalty-badge">
+            <i class="fas fa-trophy"></i> {{ loyalty_points }} Points
+          </div>
+          
+          <img src="{{ url_for('static', filename='uploads/' ~ (session.get('profile_pic') or 'default.png')) }}" class="profile-pic" onclick="toggleUploadForm()">
+          
+          <form action="{{ url_for('upload_profile_pic') }}" method="POST" enctype="multipart/form-data" class="upload-form" id="uploadForm">
+            <input type="file" name="profile_pic" accept="image/*" required>
+            <button type="submit">Upload</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Stats Section -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">UPCOMING EVENTS</div>
+          <div class="stat-icon icon-events">
+            <i class="fas fa-calendar"></i>
+          </div>
+        </div>
+        <div class="stat-value">24</div>
+        <div class="stat-change change-positive">
+          <i class="fas fa-arrow-up"></i> 5 new this week
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">MY BOOKINGS</div>
+          <div class="stat-icon icon-bookings">
+            <i class="fas fa-ticket-alt"></i>
+          </div>
+        </div>
+        <div class="stat-value">{{ bookings|length }}</div>
+        <div class="stat-change change-positive">
+          <i class="fas fa-arrow-up"></i> 2 upcoming
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">LOYALTY POINTS</div>
+          <div class="stat-icon icon-points">
+            <i class="fas fa-star"></i>
+          </div>
+        </div>
+        <div class="stat-value">{{ loyalty_points }}</div>
+        <div class="stat-change change-positive">
+          <i class="fas fa-arrow-up"></i> Earn more points
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-title">FAVORITES</div>
+          <div class="stat-icon icon-favorites">
+            <i class="fas fa-heart"></i>
+          </div>
+        </div>
+        <div class="stat-value">8</div>
+        <div class="stat-change change-positive">
+          <i class="fas fa-arrow-up"></i> 2 new saved
+        </div>
+      </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="filters">
+      <form action="{{ url_for('dashboard') }}" method="get" class="filter-form">
+        <select name="category">
+          <option value="">All Categories</option>
+          <option value="Music" {% if category=='Music' %}selected{% endif %}>Music</option>
+          <option value="Sports" {% if category=='Sports' %}selected{% endif %}>Sports</option>
+          <option value="Exhibition" {% if category=='Exhibition' %}selected{% endif %}>Exhibition</option>
+        </select>
+        
+        <select name="date">
+          <option value="">Any Date</option>
+          <option value="today" {% if date_filter=='today' %}selected{% endif %}>Today</option>
+          <option value="week" {% if date_filter=='week' %}selected{% endif %}>This Week</option>
+        </select>
+        
+        <input type="hidden" name="search" value="{{ search }}">
+        
+        <button type="submit" class="filter-btn">Apply Filters</button>
+      </form>
+    </div>
+    
+    <!-- Event Grid -->
+    <div class="event-grid">
+      {% if events %}
+        {% for event in events %}
+        <div class="event-card">
+          <div class="event-image-wrap">
+            <img src="{{ url_for('static', filename='images/' ~ (event.image if event.image else 'default.jpg')) }}" alt="Event Image" class="event-img">
+            {% if event.category %}
+              <span class="event-badge">{{ event.category }}</span>
+            {% endif %}
+          </div>
+          <div class="event-info">
+            <h3>{{ event.name }}</h3>
+            <p class="date"><i class="far fa-calendar-alt"></i> {{ event.start_date }} - {{ event.end_date }}</p>
+            <p class="desc">{{ event.description }}</p>
+            <p class="location"><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
+            
+            <form action="{{ url_for('book_event', event_id=event.id) }}" method="POST">
+              {% if event.id in booked_events %}
+                <button type="submit" class="book-btn" disabled>
+                  <i class="fas fa-check-circle"></i> Already Booked
+                </button>
+              {% else %}
+                <button type="submit" class="book-btn">
+                  <i class="fas fa-ticket-alt"></i> Book Now
+                </button>
+              {% endif %}
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">
+            <i class="fas fa-calendar-times"></i>
+          </div>
+          <h3 class="empty-text">No events found</h3>
+          <p>Try adjusting your search or filters to find more events.</p>
+        </div>
+      {% endif %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if events and total_pages > 1 %}
+    <div class="pagination">
+      {% if page > 1 %}
+        <a href="{{ url_for('dashboard', page=page-1, search=search, category=category, date=date_filter) }}">
+          <i class="fas fa-chevron-left"></i>
+        </a>
+      {% endif %}
+      
+      {% for p in range(1, total_pages+1) %}
+        <a href="{{ url_for('dashboard', page=p, search=search, category=category, date=date_filter) }}" class="{% if page == p %}active{% endif %}">
+          {{ p }}
+        </a>
+      {% endfor %}
+      
+      {% if page < total_pages %}
+        <a href="{{ url_for('dashboard', page=page+1, search=search, category=category, date=date_filter) }}">
+          <i class="fas fa-chevron-right"></i>
+        </a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+
+  <script>
+    // Toggle upload form
+    function toggleUploadForm() {
+      const form = document.getElementById('uploadForm');
+      form.style.display = form.style.display === 'block' ? 'none' : 'block';
+    }
+    
+    // Close the upload form when clicking outside
+    document.addEventListener('click', function(event) {
+      const form = document.getElementById('uploadForm');
+      const profilePic = document.querySelector('.profile-pic');
+      
+      if (form.style.display === 'block' && event.target !== profilePic && !profilePic.contains(event.target)) {
+        form.style.display = 'none';
+      }
+    });
+    
+    // Mobile menu toggle
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    
+    if (menuToggle) {
+      menuToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('active');
+      });
+    }
+    
+    // Add animation to event cards
+    document.addEventListener('DOMContentLoaded', function() {
+      const eventCards = document.querySelectorAll('.event-card');
+      eventCards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+      });
+    });
+  </script>
+</body>
+</html>

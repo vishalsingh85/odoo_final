@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - EventHive</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3a0ca3;
+      --accent: #f72585;
+      --success: #4cc9f0;
+      --warning: #f9c74f;
+      --danger: #f94144;
+      --dark: #2b2d42;
+      --light: #f8f9fa;
+      --gray-100: #f8f9fa;
+      --gray-200: #e9ecef;
+      --gray-300: #dee2e6;
+      --gray-400: #ced4da;
+      --gray-500: #adb5bd;
+      --gray-600: #6c757d;
+      --gray-700: #495057;
+      --gray-800: #343a40;
+      --gray-900: #212529;
+      --border-radius: 12px;
+      --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.05), 0 6px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f5f7fb;
+      color: var(--gray-800);
+      line-height: 1.6;
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Background Animation */
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.1;
+    }
+
+    .shape-1 {
+      width: 500px;
+      height: 500px;
+      background: var(--primary);
+      top: -250px;
+      left: -250px;
+    }
+
+    .shape-2 {
+      width: 400px;
+      height: 400px;
+      background: var(--accent);
+      bottom: -200px;
+      right: -200px;
+    }
+
+    .shape-3 {
+      width: 300px;
+      height: 300px;
+      background: var(--success);
+      top: 50%;
+      left: 70%;
+    }
+
+    /* Auth Container */
+    .auth-container {
+      width: 100%;
+      max-width: 450px;
+      margin: auto;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .auth-card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 2.5rem;
+      box-shadow: var(--card-shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+    }
+
+    .auth-logo {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .auth-logo-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .auth-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      color: var(--dark);
+    }
+
+    .auth-sub {
+      text-align: center;
+      color: var(--gray-600);
+      margin-bottom: 2rem;
+    }
+
+    /* Flash Messages */
+    .flash-messages {
+      margin-bottom: 1.5rem;
+    }
+
+    .flash-message {
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+
+    .flash-success {
+      background-color: rgba(76, 201, 240, 0.2);
+      color: var(--success);
+      border-left: 4px solid var(--success);
+    }
+
+    .flash-danger {
+      background-color: rgba(249, 65, 68, 0.2);
+      color: var(--danger);
+      border-left: 4px solid var(--danger);
+    }
+
+    .flash-info {
+      background-color: rgba(67, 97, 238, 0.2);
+      color: var(--primary);
+      border-left: 4px solid var(--primary);
+    }
+
+    .flash-icon {
+      margin-right: 0.8rem;
+      font-size: 1.2rem;
+    }
+
+    /* Form Styles */
+    .input-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .input-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 1rem;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--border-radius);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+      transition: var(--transition);
+      padding-right: 3rem;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 1rem;
+      top: 2.8rem;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--gray-500);
+      font-size: 1.2rem;
+      transition: var(--transition);
+    }
+
+    .password-toggle:hover {
+      color: var(--primary);
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-login:active {
+      transform: translateY(0);
+    }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 1.5rem 0;
+      color: var(--gray-500);
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background-color: var(--gray-300);
+    }
+
+    .divider-text {
+      padding: 0 1rem;
+      font-size: 0.9rem;
+    }
+
+    /* Social Login */
+    .social-login {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-social {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.8rem;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--border-radius);
+      background: white;
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 500;
+    }
+
+    .btn-social:hover {
+      background-color: var(--gray-100);
+      transform: translateY(-1px);
+    }
+
+    .btn-google {
+      color: #DB4437;
+    }
+
+    .btn-facebook {
+      color: #4267B2;
+    }
+
+    /* Extra Links */
+    .extra-links {
+      text-align: center;
+    }
+
+    .forgot-link {
+      display: block;
+      margin-bottom: 1rem;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .forgot-link:hover {
+      text-decoration: underline;
+    }
+
+    .signup-link {
+      color: var(--gray-600);
+    }
+
+    .signup-link a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* Demo Credentials */
+    .demo-credentials {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background-color: rgba(67, 97, 238, 0.05);
+      border-radius: var(--border-radius);
+      border-left: 4px solid var(--primary);
+    }
+
+    .demo-title {
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .demo-title i {
+      color: var(--primary);
+    }
+
+    .demo-item {
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .demo-item strong {
+      color: var(--dark);
+    }
+
+    /* Responsive */
+    @media (max-width: 576px) {
+      .auth-container {
+        padding: 1rem;
+      }
+      
+      .auth-card {
+        padding: 2rem 1.5rem;
+      }
+      
+      .social-login {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .auth-card {
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    /* Loading State */
+    .btn-loading {
+      position: relative;
+      color: transparent;
+    }
+
+    .btn-loading::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      top: 50%;
+      left: 50%;
+      margin: -10px 0 0 -10px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s ease infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Animation -->
+  <div class="background">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+
+  <!-- Auth Container -->
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <span class="auth-logo-icon">🎩</span>
+      </div>
+      
+      <h1 class="auth-title">Welcome Back</h1>
+      <p class="auth-sub">Sign in to your EventHive account</p>
+
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-messages">
+            {% for category, message in messages %}
+              <div class="flash-message flash-{{ category }}">
+                <i class="flash-icon fas fa-{% if category == 'success' %}check-circle{% elif category == 'danger' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <form action="{{ url_for('login') }}" method="post" id="loginForm">
+        <div class="input-group">
+          <label for="email" class="input-label">Email Address</label>
+          <input type="email" name="email" id="email" class="input-field" placeholder="Enter your email" required autocomplete="username">
+        </div>
+        
+        <div class="input-group">
+          <label for="login-password" class="input-label">Password</label>
+          <input type="password" name="password" id="login-password" class="input-field" placeholder="Enter your password" required autocomplete="current-password">
+          <button type="button" class="password-toggle" id="passwordToggle">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+        
+        <button type="submit" class="btn-login" id="loginButton">
+          <span>Login to Account</span>
+        </button>
+      </form>
+
+      <div class="divider">
+        <span class="divider-text">Or continue with</span>
+      </div>
+
+      <div class="social-login">
+        <button type="button" class="btn-social btn-google">
+          <i class="fab fa-google"></i>
+          Google
+        </button>
+        <button type="button" class="btn-social btn-facebook">
+          <i class="fab fa-facebook-f"></i>
+          Facebook
+        </button>
+      </div>
+
+      <div class="extra-links">
+        <a href="#" class="forgot-link">Forgot your password?</a>
+        <p class="signup-link">Don't have an account? <a href="{{ url_for('signup') }}">Create new account</a></p>
+      </div>
+
+      <!-- Demo Credentials (for development) -->
+      <div class="demo-credentials">
+        <div class="demo-title">
+          <i class="fas fa-lightbulb"></i>
+          <span>Demo Credentials</span>
+        </div>
+        <div class="demo-item"><strong>Admin:</strong> admin@gmail.com / admin123</div>
+        <div class="demo-item"><strong>User:</strong> Any verified email / your password</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Toggle password visibility
+    const passwordToggle = document.getElementById('passwordToggle');
+    const passwordInput = document.getElementById('login-password');
+    
+    passwordToggle.addEventListener('click', function() {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      
+      // Toggle eye icon
+      const eyeIcon = passwordToggle.querySelector('i');
+      if (type === 'password') {
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+      } else {
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+      }
+    });
+    
+    // Form submission loading state
+    const loginForm = document.getElementById('loginForm');
+    const loginButton = document.getElementById('loginButton');
+    const buttonText = loginButton.querySelector('span');
+    
+    loginForm.addEventListener('submit', function() {
+      loginButton.classList.add('btn-loading');
+      buttonText.style.visibility = 'hidden';
+      loginButton.disabled = true;
+      
+      // Re-enable after 3 seconds (in case of error)
+      setTimeout(() => {
+        loginButton.classList.remove('btn-loading');
+        buttonText.style.visibility = 'visible';
+        loginButton.disabled = false;
+      }, 3000);
+    });
+    
+    // Auto-hide flash messages after 5 seconds
+    setTimeout(() => {
+      const flashMessages = document.querySelectorAll('.flash-message');
+      flashMessages.forEach(msg => {
+        msg.style.opacity = '0';
+        setTimeout(() => msg.remove(), 1000);
+      });
+    }, 5000);
+    
+    // Add subtle animation to social buttons
+    const socialButtons = document.querySelectorAll('.btn-social');
+    socialButtons.forEach(button => {
+      button.addEventListener('mouseenter', () => {
+        button.style.transform = 'translateY(-2px)';
+      });
+      
+      button.addEventListener('mouseleave', () => {
+        button.style.transform = 'translateY(0)';
+      });
+    });
+  </script>
+</body>
+</html>

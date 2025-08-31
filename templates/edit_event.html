@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Event | Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/add_event.css') }}">
+</head>
+<body>
+  <div class="container premium-container">
+    <div class="card premium-card">
+      <h2>✏ Edit Event</h2>
+      <form method="POST" action="{{ url_for('edit_event', event_id=event['id']) }}">
+        <div class="row premium-row">
+          <div class="col-md-6 premium-col">
+            <label class="form-label">Event Name</label>
+            <input type="text" name="name" value="{{ event['name'] }}" required>
+          </div>
+          <div class="col-md-6 premium-col">
+            <label class="form-label">Location</label>
+            <input type="text" name="location" value="{{ event['location'] }}" required>
+          </div>
+          <div class="col-md-6 premium-col">
+            <label class="form-label">Latitude</label>
+            <input type="text" name="latitude" value="{{ event['latitude'] }}" required>
+          </div>
+          <div class="col-md-6 premium-col">
+            <label class="form-label">Longitude</label>
+            <input type="text" name="longitude" value="{{ event['longitude'] }}" required>
+          </div>
+          <div class="col-12 premium-col">
+            <label class="form-label">Description</label>
+            <textarea name="description" rows="4" required>{{ event['description'] }}</textarea>
+          </div>
+          <div class="col-md-6 premium-col">
+            <label class="form-label">Start Date & Time</label>
+            <input type="datetime-local" name="start_date" value="{{ event['start_date']|replace(' ', 'T') }}" required>
+          </div>
+          <div class="col-md-6 premium-col">
+            <label class="form-label">End Date & Time</label>
+            <input type="datetime-local" name="end_date" value="{{ event['end_date']|replace(' ', 'T') }}" required>
+          </div>
+          <div class="col-md-6 premium-col">
+            <label class="form-label">Category</label>
+            <select name="category" required>
+              <option value="music" {% if event['category']=='music' %}selected{% endif %}>🎶 Music</option>
+              <option value="sports" {% if event['category']=='sports' %}selected{% endif %}>⚽ Sports</option>
+              <option value="exhibition" {% if event['category']=='exhibition' %}selected{% endif %}>🎨 Exhibition</option>
+              <option value="conference" {% if event['category']=='conference' %}selected{% endif %}>💼 Conference</option>
+              <option value="workshop" {% if event['category']=='workshop' %}selected{% endif %}>🛠 Workshop</option>
+            </select>
+          </div>
+          <div class="col-md-6 premium-col d-flex align-items-center">
+            <div class="form-check form-switch mt-4">
+              <input class="form-check-input" type="checkbox" name="publish_status" id="publishSwitch" {% if event['publish_status'] %}checked{% endif %}>
+              <label class="form-check-label" for="publishSwitch">Publish Event</label>
+            </div>
+          </div>
+          <div class="col-md-6 premium-col">
+            <label class="form-label">Registration Start</label>
+            <input type="datetime-local" name="registration_start" value="{{ event['registration_start']|replace(' ', 'T') }}" required>
+          </div>
+          <div class="col-md-6 premium-col">
+            <label class="form-label">Registration End</label>
+            <input type="datetime-local" name="registration_end" value="{{ event['registration_end']|replace(' ', 'T') }}" required>
+          </div>
+        </div>
+        <div class="mt-4 text-end premium-actions">
+          <a href="{{ url_for('admin_dashboard') }}" class="btn-back premium-btn-back">⬅ Back</a>
+          <button type="submit" class="btn-custom premium-btn">Update Event</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

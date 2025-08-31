@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Bookings - EventHive</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3a0ca3;
+      --accent: #f72585;
+      --success: #4cc9f0;
+      --warning: #f9c74f;
+      --danger: #f94144;
+      --dark: #2b2d42;
+      --light: #f8f9fa;
+      --gray-100: #f8f9fa;
+      --gray-200: #e9ecef;
+      --gray-300: #dee2e6;
+      --gray-400: #ced4da;
+      --gray-500: #adb5bd;
+      --gray-600: #6c757d;
+      --gray-700: #495057;
+      --gray-800: #343a40;
+      --gray-900: #212529;
+      --sidebar-width: 260px;
+      --border-radius: 12px;
+      --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.05), 0 6px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f5f7fb;
+      color: var(--gray-800);
+      line-height: 1.6;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: linear-gradient(to bottom, var(--primary), var(--secondary));
+      color: white;
+      padding: 1.5rem 1rem;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      transition: var(--transition);
+      z-index: 1000;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding: 0 0.5rem;
+    }
+
+    .sidebar-header .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-icon {
+      margin-right: 10px;
+      font-size: 1.8rem;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      margin-top: 2rem;
+    }
+
+    .sidebar-menu li {
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      padding: 0.8rem 1rem;
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+    }
+
+    .sidebar-menu a:hover, .sidebar-menu a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .sidebar-menu i {
+      margin-right: 0.8rem;
+      font-size: 1.2rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 1.5rem 2rem;
+      transition: var(--transition);
+    }
+
+    /* Top Navigation */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      background-color: white;
+      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+    }
+
+    .page-title h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .page-title p {
+      color: var(--gray-600);
+      font-size: 0.9rem;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background-color: white;
+      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 2rem;
+      box-shadow: var(--card-shadow);
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .filter-label {
+      font-weight: 600;
+      color: var(--gray-700);
+      font-size: 0.9rem;
+    }
+
+    .filter-select {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--border-radius);
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    /* Stats Cards */
+    .stats-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--card-shadow);
+      text-align: center;
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.5rem;
+    }
+
+    .icon-total {
+      background-color: rgba(67, 97, 238, 0.2);
+      color: var(--primary);
+    }
+
+    .icon-confirmed {
+      background-color: rgba(76, 201, 240, 0.2);
+      color: var(--success);
+    }
+
+    .icon-pending {
+      background-color: rgba(249, 199, 79, 0.2);
+      color: var(--warning);
+    }
+
+    .icon-cancelled {
+      background-color: rgba(249, 65, 68, 0.2);
+      color: var(--danger);
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--gray-600);
+    }
+
+    /* Bookings List */
+    .bookings-container {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--card-shadow);
+    }
+
+    .bookings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .bookings-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .bookings-count {
+      background-color: var(--gray-100);
+      color: var(--gray-600);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .bookings-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .booking-card {
+      border: 1px solid var(--gray-200);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      transition: var(--transition);
+    }
+
+    .booking-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .booking-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .booking-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .booking-status {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status-paid {
+      background-color: rgba(76, 201, 240, 0.2);
+      color: var(--success);
+    }
+
+    .status-pending {
+      background-color: rgba(249, 199, 79, 0.2);
+      color: var(--warning);
+    }
+
+    .status-cancelled {
+      background-color: rgba(249, 65, 68, 0.2);
+      color: var(--danger);
+    }
+
+    .booking-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .booking-detail {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .detail-label {
+      font-size: 0.85rem;
+      color: var(--gray-600);
+      margin-bottom: 0.3rem;
+    }
+
+    .detail-value {
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .booking-actions {
+      display: flex;
+      gap: 0.8rem;
+    }
+
+    .btn-action {
+      padding: 0.5rem 1rem;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .btn-ticket {
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+    }
+
+    .btn-ticket:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-cancel {
+      background-color: var(--gray-200);
+      color: var(--gray-700);
+      border: none;
+    }
+
+    .btn-cancel:hover {
+      background-color: var(--gray-300);
+    }
+
+    .btn-cancelled {
+      background-color: var(--gray-100);
+      color: var(--gray-500);
+      border: none;
+      cursor: not-allowed;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--gray-500);
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: var(--gray-300);
+    }
+
+    .empty-text {
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-explore {
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-explore:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+        width: 0;
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .sidebar.active {
+        transform: translateX(0);
+        width: var(--sidebar-width);
+      }
+      
+      .menu-toggle {
+        display: block;
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        z-index: 1100;
+        background-color: var(--primary);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .top-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .filters {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .filter-group {
+        width: 100%;
+      }
+      
+      .filter-select {
+        width: 100%;
+      }
+      
+      .booking-header {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .booking-details {
+        grid-template-columns: 1fr;
+      }
+      
+      .booking-actions {
+        flex-direction: column;
+      }
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .booking-card {
+      animation: fadeIn 0.5s ease-out;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">🎩</span>
+        EventHive
+      </div>
+    </div>
+    
+    <ul class="sidebar-menu">
+      <li><a href="{{ url_for('dashboard') }}"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="{{ url_for('my_bookings') }}" class="active"><i class="fas fa-ticket-alt"></i> My Bookings</a></li>
+      <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="#"><i class="fas fa-heart"></i> Favorites</a></li>
+      <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+      <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </div>
+  
+  <div class="menu-toggle">
+    <i class="fas fa-bars"></i>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Top Navigation -->
+    <div class="top-nav">
+      <div class="page-title">
+        <h1>My Bookings</h1>
+        <p>Manage your event tickets and reservations</p>
+      </div>
+      <div class="user-info">
+        <div class="user-avatar">{{ session.user[0] if session.user }}</div>
+        <span>{{ session.user }}</span>
+      </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="filters">
+      <div class="filter-group">
+        <span class="filter-label">Status:</span>
+        <select class="filter-select" id="statusFilter">
+          <option value="all">All Bookings</option>
+          <option value="paid">Confirmed</option>
+          <option value="pending">Pending</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <span class="filter-label">Sort by:</span>
+        <select class="filter-select" id="sortFilter">
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="event_date">Event Date</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="stats-cards">
+      <div class="stat-card">
+        <div class="stat-icon icon-total">
+          <i class="fas fa-ticket-alt"></i>
+        </div>
+        <div class="stat-value">{{ bookings|length }}</div>
+        <div class="stat-label">Total Bookings</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon icon-confirmed">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-value">{{ bookings|selectattr('status', 'equalto', 'paid')|list|length }}</div>
+        <div class="stat-label">Confirmed</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon icon-pending">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="stat-value">{{ bookings|selectattr('status', 'equalto', 'pending')|list|length }}</div>
+        <div class="stat-label">Pending</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon icon-cancelled">
+          <i class="fas fa-times-circle"></i>
+        </div>
+        <div class="stat-value">{{ bookings|selectattr('status', 'equalto', 'cancelled')|list|length }}</div>
+        <div class="stat-label">Cancelled</div>
+      </div>
+    </div>
+    
+    <!-- Bookings List -->
+    <div class="bookings-container">
+      <div class="bookings-header">
+        <h2 class="bookings-title">Your Event Bookings</h2>
+        <span class="bookings-count">{{ bookings|length }} bookings</span>
+      </div>
+      
+      {% if bookings %}
+      <div class="bookings-list">
+        {% for booking in bookings %}
+        <div class="booking-card" data-status="{{ booking.status }}">
+          <div class="booking-header">
+            <h3 class="booking-title">{{ booking.event_name }}</h3>
+            <span class="booking-status status-{{ booking.status }}">
+              {% if booking.status == 'paid' %}
+                Confirmed
+              {% elif booking.status == 'pending' %}
+                Pending Payment
+              {% elif booking.status == 'cancelled' %}
+                Cancelled
+              {% endif %}
+            </span>
+          </div>
+          
+          <div class="booking-details">
+            <div class="booking-detail">
+              <span class="detail-label">Event Date</span>
+              <span class="detail-value">{{ booking.start_date.strftime('%B %d, %Y') }}</span>
+            </div>
+            
+            <div class="booking-detail">
+              <span class="detail-label">Booking Date</span>
+              <span class="detail-value">{{ booking.booking_date.strftime('%B %d, %Y') if booking.booking_date }}</span>
+            </div>
+            
+            <div class="booking-detail">
+              <span class="detail-label">Booking ID</span>
+              <span class="detail-value">#{{ booking.booking_id }}</span>
+            </div>
+            
+            <div class="booking-detail">
+              <span class="detail-label">Amount Paid</span>
+              <span class="detail-value">₹{{ booking.total_amount if booking.total_amount else '0.00' }}</span>
+            </div>
+          </div>
+          
+          <div class="booking-actions">
+            <a href="{{ url_for('ticket', booking_id=booking.booking_id) }}" class="btn-action btn-ticket">
+              <i class="fas fa-ticket-alt"></i> View Ticket
+            </a>
+            
+            {% if booking.status != 'cancelled' %}
+            <form action="{{ url_for('cancel_booking', booking_id=booking.booking_id) }}" method="POST" style="display: inline;">
+              <button type="submit" class="btn-action btn-cancel" onclick="return confirm('Are you sure you want to cancel this booking?')">
+                <i class="fas fa-times"></i> Cancel Booking
+              </button>
+            </form>
+            {% else %}
+            <button class="btn-action btn-cancelled" disabled>
+              <i class="fas fa-times"></i> Cancelled
+            </button>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fas fa-ticket-alt"></i>
+        </div>
+        <h3 class="empty-text">No bookings yet</h3>
+        <p>You haven't booked any events yet. Explore events and make your first booking!</p>
+        <a href="{{ url_for('dashboard') }}" class="btn-explore">
+          <i class="fas fa-calendar"></i> Explore Events
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <script>
+    // Mobile menu toggle
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    
+    if (menuToggle) {
+      menuToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('active');
+      });
+    }
+    
+    // Filter functionality
+    const statusFilter = document.getElementById('statusFilter');
+    const sortFilter = document.getElementById('sortFilter');
+    const bookingCards = document.querySelectorAll('.booking-card');
+    
+    function filterBookings() {
+      const statusValue = statusFilter.value;
+      const sortValue = sortFilter.value;
+      
+      // Filter by status
+      bookingCards.forEach(card => {
+        if (statusValue === 'all' || card.getAttribute('data-status') === statusValue) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      
+      // Sort functionality would be implemented here
+      // In a real application, you would sort the bookings based on the selected option
+    }
+    
+    statusFilter.addEventListener('change', filterBookings);
+    sortFilter.addEventListener('change', filterBookings);
+    
+    // Initialize filters
+    filterBookings();
+  </script>
+</body>
+</html>

@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendees - EventHive Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3a0ca3;
+      --accent: #f72585;
+      --success: #4cc9f0;
+      --warning: #f9c74f;
+      --danger: #f94144;
+      --dark: #2b2d42;
+      --light: #f8f9fa;
+      --gray-100: #f8f9fa;
+      --gray-200: #e9ecef;
+      --gray-300: #dee2e6;
+      --gray-400: #ced4da;
+      --gray-500: #adb5bd;
+      --gray-600: #6c757d;
+      --gray-700: #495057;
+      --gray-800: #343a40;
+      --gray-900: #212529;
+      --sidebar-width: 260px;
+      --border-radius: 12px;
+      --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.05), 0 6px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f5f7fb;
+      color: var(--gray-800);
+      line-height: 1.6;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: linear-gradient(to bottom, var(--primary), var(--secondary));
+      color: white;
+      padding: 1.5rem 1rem;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      transition: var(--transition);
+      z-index: 1000;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding: 0 0.5rem;
+    }
+
+    .sidebar-header .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-icon {
+      margin-right: 10px;
+      font-size: 1.8rem;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      margin-top: 2rem;
+    }
+
+    .sidebar-menu li {
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      padding: 0.8rem 1rem;
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+    }
+
+    .sidebar-menu a:hover, .sidebar-menu a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .sidebar-menu i {
+      margin-right: 0.8rem;
+      font-size: 1.2rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 1.5rem 2rem;
+      transition: var(--transition);
+    }
+
+    /* Top Navigation */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      background-color: white;
+      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+    }
+
+    .page-title h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .page-title p {
+      color: var(--gray-600);
+      font-size: 0.9rem;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.7rem 1.5rem;
+      background-color: var(--gray-200);
+      color: var(--gray-700);
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .btn-back:hover {
+      background-color: var(--gray-300);
+      transform: translateX(-3px);
+    }
+
+    .btn-export {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.7rem 1.5rem;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .btn-export:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+    }
+
+    /* Stats Cards */
+    .stats-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--card-shadow);
+      text-align: center;
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.5rem;
+    }
+
+    .icon-total {
+      background-color: rgba(67, 97, 238, 0.2);
+      color: var(--primary);
+    }
+
+    .icon-attended {
+      background-color: rgba(76, 201, 240, 0.2);
+      color: var(--success);
+    }
+
+    .icon-pending {
+      background-color: rgba(249, 199, 79, 0.2);
+      color: var(--warning);
+    }
+
+    .icon-guest {
+      background-color: rgba(247, 37, 133, 0.2);
+      color: var(--accent);
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--gray-600);
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background-color: white;
+      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 2rem;
+      box-shadow: var(--card-shadow);
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .filter-label {
+      font-weight: 600;
+      color: var(--gray-700);
+      font-size: 0.9rem;
+    }
+
+    .filter-select, .filter-input {
+      padding: 0.7rem 1rem;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--border-radius);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+    }
+
+    .filter-btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .filter-btn:hover {
+      background-color: var(--secondary);
+    }
+
+    /* Attendees Table */
+    .attendees-container {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--card-shadow);
+      overflow-x: auto;
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .table-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .table-count {
+      background-color: var(--gray-100);
+      color: var(--gray-600);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .attendees-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .attendees-table th {
+      background-color: var(--gray-100);
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--gray-700);
+      border-bottom: 2px solid var(--gray-200);
+    }
+
+    .attendees-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--gray-200);
+      vertical-align: middle;
+    }
+
+    .attendees-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .attendees-table tr:hover {
+      background-color: var(--gray-100);
+    }
+
+    .attendee-name {
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .attendee-email {
+      color: var(--gray-600);
+      font-size: 0.9rem;
+    }
+
+    .status-badge {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .status-attended {
+      background-color: rgba(76, 201, 240, 0.2);
+      color: var(--success);
+    }
+
+    .status-not-attended {
+      background-color: rgba(249, 65, 68, 0.2);
+      color: var(--danger);
+    }
+
+    .gender-badge {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .gender-male {
+      background-color: rgba(67, 97, 238, 0.2);
+      color: var(--primary);
+    }
+
+    .gender-female {
+      background-color: rgba(247, 37, 133, 0.2);
+      color: var(--accent);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-action {
+      padding: 0.5rem;
+      border-radius: var(--border-radius);
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-checkin {
+      background-color: rgba(76, 201, 240, 0.2);
+      color: var(--success);
+    }
+
+    .btn-checkin:hover {
+      background-color: rgba(76, 201, 240, 0.3);
+    }
+
+    .btn-edit {
+      background-color: rgba(249, 199, 79, 0.2);
+      color: var(--warning);
+    }
+
+    .btn-edit:hover {
+      background-color: rgba(249, 199, 79, 0.3);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--gray-500);
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: var(--gray-300);
+    }
+
+    .empty-text {
+      margin-bottom: 1.5rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+        width: 0;
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .sidebar.active {
+        transform: translateX(0);
+        width: var(--sidebar-width);
+      }
+      
+      .menu-toggle {
+        display: block;
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        z-index: 1100;
+        background-color: var(--primary);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .top-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .filters {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .filter-group {
+        width: 100%;
+      }
+      
+      .filter-select, .filter-input {
+        width: 100%;
+      }
+      
+      .stats-cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .attendees-table {
+        min-width: 800px;
+      }
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .stat-card, .attendees-container {
+      animation: fadeIn 0.5s ease-out;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">🎩</span>
+        EventHive Admin
+      </div>
+    </div>
+    
+    <ul class="sidebar-menu">
+      <li><a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="{{ url_for('add_event') }}"><i class="fas fa-calendar-plus"></i> Add Event</a></li>
+      <li><a href="{{ url_for('view_attendees', event_id=event_id) }}" class="active"><i class="fas fa-users"></i> Attendees</a></li>
+      <li><a href="{{ url_for('analytics_dashboard') }}"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+      <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+      <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </div>
+  
+  <div class="menu-toggle">
+    <i class="fas fa-bars"></i>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Top Navigation -->
+    <div class="top-nav">
+      <div class="page-title">
+        <h1>Event Attendees</h1>
+        <p>Manage and view attendees for your event</p>
+      </div>
+      
+      <div class="nav-right">
+        <a href="{{ url_for('admin_dashboard') }}" class="btn-back">
+          <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <a href="#" class="btn-export">
+          <i class="fas fa-download"></i> Export CSV
+        </a>
+      </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="stats-cards">
+      <div class="stat-card">
+        <div class="stat-icon icon-total">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-value">{{ attendees|length }}</div>
+        <div class="stat-label">Total Attendees</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon icon-attended">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-value">{{ attendees|selectattr('attended', 'equalto', true)|list|length }}</div>
+        <div class="stat-label">Attended</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon icon-pending">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="stat-value">{{ attendees|selectattr('attended', 'equalto', false)|list|length }}</div>
+        <div class="stat-label">Not Attended</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon icon-guest">
+          <i class="fas fa-user-plus"></i>
+        </div>
+        <div class="stat-value">
+          {% set total_guests = attendees|sum(attribute='total_guest') %}
+          {{ total_guests }}
+        </div>
+        <div class="stat-label">Total Guests</div>
+      </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="filters">
+      <form method="get" class="filter-form">
+        <div class="filter-group">
+          <span class="filter-label">Gender:</span>
+          <select name="gender" class="filter-select">
+            <option value="">All Genders</option>
+            <option value="Male" {% if request.args.get('gender') == 'Male' %}selected{% endif %}>Male</option>
+            <option value="Female" {% if request.args.get('gender') == 'Female' %}selected{% endif %}>Female</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <span class="filter-label">Attendance:</span>
+          <select name="attended" class="filter-select">
+            <option value="">All Attendance</option>
+            <option value="yes" {% if request.args.get('attended') == 'yes' %}selected{% endif %}>Attended</option>
+            <option value="no" {% if request.args.get('attended') == 'no' %}selected{% endif %}>Not Attended</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <span class="filter-label">Search:</span>
+          <input type="text" name="search" placeholder="Search attendees..." value="{{ request.args.get('search', '') }}" class="filter-input">
+        </div>
+        
+        <button type="submit" class="filter-btn">
+          <i class="fas fa-filter"></i> Apply Filters
+        </button>
+      </form>
+    </div>
+    
+    <!-- Attendees Table -->
+    <div class="attendees-container">
+      <div class="table-header">
+        <h2 class="table-title">Attendee List</h2>
+        <span class="table-count">{{ attendees|length }} attendees</span>
+      </div>
+      
+      {% if attendees %}
+      <div class="table-responsive">
+        <table class="attendees-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Guests</th>
+              <th>Gender</th>
+              <th>Attendance</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for attendee in attendees %}
+            <tr>
+              <td>
+                <div class="attendee-name">{{ attendee.name }}</div>
+                <div class="attendee-email">{{ attendee.email }}</div>
+              </td>
+              <td>{{ attendee.email }}</td>
+              <td>{{ attendee.phone }}</td>
+              <td>{{ attendee.total_guest }}</td>
+              <td>
+                <span class="gender-badge gender-{{ attendee.gender|lower }}">
+                  {{ attendee.gender }}
+                </span>
+              </td>
+              <td>
+                <span class="status-badge status-{% if attendee.attended %}attended{% else %}not-attended{% endif %}">
+                  {% if attendee.attended %}
+                    <i class="fas fa-check-circle"></i> Attended
+                  {% else %}
+                    <i class="fas fa-times-circle"></i> Not Attended
+                  {% endif %}
+                </span>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-action btn-checkin" title="Check-in Attendee">
+                    <i class="fas fa-qrcode"></i>
+                  </button>
+                  <button class="btn-action btn-edit" title="Edit Attendee">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fas fa-users-slash"></i>
+        </div>
+        <h3 class="empty-text">No attendees found</h3>
+        <p>Try adjusting your search filters or check back later.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <script>
+    // Mobile menu toggle
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    
+    if (menuToggle) {
+      menuToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('active');
+      });
+    }
+    
+    // Export functionality
+    const exportBtn = document.querySelector('.btn-export');
+    if (exportBtn) {
+      exportBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        alert('Exporting attendees data to CSV...');
+        // In a real application, this would trigger a download
+      });
+    }
+    
+    // Check-in functionality
+    const checkinButtons = document.querySelectorAll('.btn-checkin');
+    checkinButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const attendeeName = this.closest('tr').querySelector('.attendee-name').textContent;
+        alert(`Checking in ${attendeeName}...`);
+        // In a real application, this would update the attendance status
+      });
+    });
+    
+    // Edit functionality
+    const editButtons = document.querySelectorAll('.btn-edit');
+    editButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const attendeeName = this.closest('tr').querySelector('.attendee-name').textContent;
+        alert(`Editing ${attendeeName}...`);
+        // In a real application, this would open an edit form
+      });
+    });
+  </script>
+</body>
+</html>

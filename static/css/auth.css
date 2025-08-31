@@ -1,0 +1,164 @@
+/* Full background image */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+  height: 100vh;
+  background: linear-gradient(120deg, #3D52A0 0%, #7091E6 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Dark overlay for better contrast */
+body::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.25);
+  z-index: 0;
+}
+
+/* Auth Box */
+.auth-container {
+  position: relative;
+  z-index: 1;
+  width: 370px;
+  padding: 48px 38px 36px 38px;
+  border-radius: 22px;
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 12px 40px rgba(61,82,160,0.18), 0 2px 8px rgba(0,0,0,0.10);
+  color: #fff;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: 1.5px solid #bfcfff;
+}
+
+.auth-container:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 18px 60px rgba(61,82,160,0.25), 0 4px 16px rgba(0,0,0,0.13);
+}
+
+/* Logo */
+.auth-logo {
+  font-size: 2.5rem;
+  margin-bottom: 0.7rem;
+  background: linear-gradient(90deg, #fff, #bfcfff 60%, #ffb86b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Heading */
+.auth-container h2 {
+  margin-bottom: 10px;
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 1px;
+  text-shadow: 0 3px 12px rgba(0,0,0,0.18);
+}
+
+/* Subheading */
+.auth-sub {
+  color: #bfcfff;
+  font-size: 1.08rem;
+  margin-bottom: 22px;
+  font-weight: 500;
+}
+
+/* Input Group */
+.input-group {
+  margin-bottom: 20px;
+  text-align: left;
+  position: relative;
+}
+
+.input-group label {
+  font-size: 0.97rem;
+  margin-bottom: 6px;
+  display: block;
+  color: #e0e0e0;
+  font-weight: 600;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 13px;
+  border: none;
+  outline: none;
+  font-size: 1.08rem;
+  background: rgba(255,255,255,0.22);
+  color: #fff;
+  transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+  box-shadow: 0 2px 8px rgba(112, 145, 230, 0.08);
+}
+
+.input-group input:focus {
+  background: rgba(255,255,255,0.32);
+  box-shadow: 0 0 12px rgba(112, 145, 230, 0.18);
+  transform: scale(1.02);
+}
+
+/* Eye icon */
+.toggle-eye {
+  position: absolute;
+  right: 18px;
+  top: 65%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  user-select: none;
+  font-size: 1.2rem;
+  color: #bfcfff;
+  transition: color 0.2s;
+}
+
+.toggle-eye:hover {
+  color: #ffb86b;
+}
+
+/* Buttons */
+.btn {
+  width: 100%;
+  padding: 15px 0;
+  border-radius: 13px;
+  border: none;
+  font-weight: 800;
+  font-size: 1.13rem;
+  color: white;
+  cursor: pointer;
+  background: linear-gradient(90deg, #3D52A0, #7091E6 80%, #ffb86b 100%);
+  background-size: 200% 200%;
+  box-shadow: 0 6px 18px rgba(61,82,160,0.13);
+  transition: all 0.5s, background-position 0.8s;
+  letter-spacing: 0.5px;
+}
+
+.btn:hover {
+  background-position: 100% 50%;
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 10px 25px rgba(61,82,160,0.18);
+}
+
+/* Links */
+.extra-links {
+  margin-top: 22px;
+  font-size: 0.97rem;
+  color: #e0e0e0;
+}
+
+.extra-links a {
+  color: #bfcfff;
+  text-decoration: none;
+  transition: color 0.3s, transform 0.3s;
+  font-weight: 600;
+}
+
+.extra-links a:hover {
+  color: #ffb86

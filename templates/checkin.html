@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Check-in System - EventHive Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3a0ca3;
+      --accent: #f72585;
+      --success: #4cc9f0;
+      --warning: #f9c74f;
+      --danger: #f94144;
+      --dark: #2b2d42;
+      --light: #f8f9fa;
+      --gray-100: #f8f9fa;
+      --gray-200: #e9ecef;
+      --gray-300: #dee2e6;
+      --gray-400: #ced4da;
+      --gray-500: #adb5bd;
+      --gray-600: #6c757d;
+      --gray-700: #495057;
+      --gray-800: #343a40;
+      --gray-900: #212529;
+      --sidebar-width: 260px;
+      --border-radius: 12px;
+      --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.05), 0 6px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f5f7fb;
+      color: var(--gray-800);
+      line-height: 1.6;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: linear-gradient(to bottom, var(--primary), var(--secondary));
+      color: white;
+      padding: 1.5rem 1rem;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      transition: var(--transition);
+      z-index: 1000;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding: 0 0.5rem;
+    }
+
+    .sidebar-header .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-icon {
+      margin-right: 10px;
+      font-size: 1.8rem;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      margin-top: 2rem;
+    }
+
+    .sidebar-menu li {
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      padding: 0.8rem 1rem;
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+    }
+
+    .sidebar-menu a:hover, .sidebar-menu a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .sidebar-menu i {
+      margin-right: 0.8rem;
+      font-size: 1.2rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 1.5rem 2rem;
+      transition: var(--transition);
+    }
+
+    /* Top Navigation */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      background-color: white;
+      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+    }
+
+    .page-title h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .page-title p {
+      color: var(--gray-600);
+      font-size: 0.9rem;
+    }
+
+    /* Check-in Container */
+    .checkin-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 992px) {
+      .checkin-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Scanner Section */
+    .scanner-section {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--card-shadow);
+    }
+
+    .scanner-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .scanner-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .scanner-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .scanner-btn {
+      background: none;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--border-radius);
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .scanner-btn:hover {
+      background-color: var(--gray-100);
+    }
+
+    .scanner-btn.primary {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+    }
+
+    .scanner-btn.primary:hover {
+      background-color: var(--secondary);
+    }
+
+    .scanner-view {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      background-color: var(--gray-100);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .scanner-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 2px solid var(--primary);
+      border-radius: var(--border-radius);
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+      pointer-events: none;
+    }
+
+    .scanner-frame {
+      position: absolute;
+      width: 70%;
+      height: 70%;
+      border: 2px solid var(--primary);
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(67, 97, 238, 0.5);
+    }
+
+    .scanner-status {
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--gray-600);
+    }
+
+    /* Manual Entry */
+    .manual-entry {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--card-shadow);
+      margin-top: 1.5rem;
+    }
+
+    .manual-header {
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .manual-form {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .manual-input {
+      flex: 1;
+      padding: 0.7rem 1rem;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--border-radius);
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .manual-submit {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      padding: 0 1.5rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .manual-submit:hover {
+      background-color: var(--secondary);
+    }
+
+    /* Check-in Results */
+    .results-section {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--card-shadow);
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .results-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .results-count {
+      background-color: var(--gray-100);
+      color: var(--gray-600);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .results-list {
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .result-item {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid var(--gray-200);
+      transition: var(--transition);
+    }
+
+    .result-item:hover {
+      background-color: var(--gray-100);
+    }
+
+    .result-item:last-child {
+      border-bottom: none;
+    }
+
+    .result-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      margin-right: 1rem;
+      flex-shrink: 0;
+    }
+
+    .result-info {
+      flex: 1;
+    }
+
+    .result-name {
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+
+    .result-details {
+      font-size: 0.85rem;
+      color: var(--gray-600);
+    }
+
+    .result-time {
+      font-size: 0.8rem;
+      color: var(--gray-500);
+      margin-top: 0.3rem;
+    }
+
+    .result-status {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-left: 1rem;
+    }
+
+    .status-checked-in {
+      background-color: rgba(76, 201, 240, 0.2);
+      color: var(--success);
+    }
+
+    .status-duplicate {
+      background-color: rgba(249, 199, 79, 0.2);
+      color: var(--warning);
+    }
+
+    .status-error {
+      background-color: rgba(249, 65, 68, 0.2);
+      color: var(--danger);
+    }
+
+    /* Check-in Stats */
+    .stats-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .stat-card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--card-shadow);
+      text-align: center;
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.5rem;
+    }
+
+    .icon-attendees {
+      background-color: rgba(67, 97, 238, 0.2);
+      color: var(--primary);
+    }
+
+    .icon-checked-in {
+      background-color: rgba(76, 201, 240, 0.2);
+      color: var(--success);
+    }
+
+    .icon-pending {
+      background-color: rgba(249, 199, 79, 0.2);
+      color: var(--warning);
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--gray-600);
+    }
+
+    /* Toast Notifications */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+
+    .toast {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 1rem 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      align-items: center;
+      animation: slideIn 0.3s ease;
+      border-left: 4px solid var(--primary);
+    }
+
+    .toast.success {
+      border-left-color: var(--success);
+    }
+
+    .toast.error {
+      border-left-color: var(--danger);
+    }
+
+    .toast.warning {
+      border-left-color: var(--warning);
+    }
+
+    .toast-icon {
+      margin-right: 1rem;
+      font-size: 1.2rem;
+    }
+
+    .toast.success .toast-icon {
+      color: var(--success);
+    }
+
+    .toast.error .toast-icon {
+      color: var(--danger);
+    }
+
+    .toast.warning .toast-icon {
+      color: var(--warning);
+    }
+
+    .toast-message {
+      flex: 1;
+    }
+
+    .toast-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--gray-500);
+      font-size: 1.2rem;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+        width: 0;
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .sidebar.active {
+        transform: translateX(0);
+        width: var(--sidebar-width);
+      }
+      
+      .menu-toggle {
+        display: block;
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        z-index: 1100;
+        background-color: var(--primary);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .top-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .scanner-actions {
+        flex-wrap: wrap;
+      }
+      
+      .manual-form {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">🎩</span>
+        EventHive Admin
+      </div>
+    </div>
+    
+    <ul class="sidebar-menu">
+      <li><a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="{{ url_for('add_event') }}"><i class="fas fa-calendar-plus"></i> Add Event</a></li>
+      <li><a href="#"><i class="fas fa-users"></i> Attendees</a></li>
+      <li><a href="{{ url_for('analytics_dashboard') }}"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+      <li><a href="{{ url_for('checkin_page') }}" class="active"><i class="fas fa-qrcode"></i> Check-in</a></li>
+      <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+      <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </div>
+  
+  <div class="menu-toggle">
+    <i class="fas fa-bars"></i>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Top Navigation -->
+    <div class="top-nav">
+      <div class="page-title">
+        <h1>Event Check-in System</h1>
+        <p>Scan QR codes to check attendees into events</p>
+      </div>
+      <div class="event-selector">
+        <select id="eventSelect">
+          <option value="">Select an event</option>
+          {% for event in events %}
+          <option value="{{ event.id }}">{{ event.name }} - {{ event.start_date.strftime('%b %d, %Y') }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    
+    <!-- Check-in Container -->
+    <div class="checkin-container">
+      <!-- Scanner Section -->
+      <div class="scanner-section">
+        <div class="scanner-header">
+          <div class="scanner-title">QR Code Scanner</div>
+          <div class="scanner-actions">
+            <button class="scanner-btn" id="switchCamera">
+              <i class="fas fa-camera-rotate"></i> Switch Camera
+            </button>
+            <button class="scanner-btn primary" id="startScanner">
+              <i class="fas fa-camera"></i> Start Scanner
+            </button>
+          </div>
+        </div>
+        
+        <div class="scanner-view">
+          <video id="video" autoplay playsinline></video>
+          <div class="scanner-overlay">
+            <div class="scanner-frame"></div>
+          </div>
+        </div>
+        
+        <div class="scanner-status" id="scannerStatus">
+          Scanner not active. Click "Start Scanner" to begin.
+        </div>
+        
+        <div class="manual-entry">
+          <div class="manual-header">Manual Entry</div>
+          <div class="manual-form">
+            <input type="text" class="manual-input" id="manualInput" placeholder="Enter booking ID or ticket code">
+            <button class="manual-submit" id="manualSubmit">Check In</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Results Section -->
+      <div class="results-section">
+        <div class="results-header">
+          <div class="results-title">Recent Check-ins</div>
+          <div class="results-count" id="resultsCount">0</div>
+        </div>
+        
+        <div class="results-list" id="resultsList">
+          <!-- Check-in results will be added here dynamically -->
+          <div class="result-item" style="text-align: center; color: var(--gray-500);">
+            <p>No check-ins yet. Scan a QR code to begin.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Check-in Stats -->
+    <div class="stats-cards">
+      <div class="stat-card">
+        <div class="stat-icon icon-attendees">
+          <i class="fas fa-ticket-alt"></i>
+        </div>
+        <div class="stat-value" id="totalAttendees">0</div>
+        <div class="stat-label">Total Attendees</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon icon-checked-in">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-value" id="checkedIn">0</div>
+        <div class="stat-label">Checked In</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon icon-pending">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="stat-value" id="pending">0</div>
+        <div class="stat-label">Pending</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    // Mobile menu toggle
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    
+    if (menuToggle) {
+      menuToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('active');
+      });
+    }
+    
+    // Scanner functionality
+    let scannerActive = false;
+    let currentStream = null;
+    let facingMode = 'environment'; // 'environment' for back camera, 'user' for front
+    
+    const video = document.getElementById('video');
+    const startScannerBtn = document.getElementById('startScanner');
+    const switchCameraBtn = document.getElementById('switchCamera');
+    const scannerStatus = document.getElementById('scannerStatus');
+    const manualInput = document.getElementById('manualInput');
+    const manualSubmit = document.getElementById('manualSubmit');
+    const resultsList = document.getElementById('resultsList');
+    const resultsCount = document.getElementById('resultsCount');
+    const totalAttendees = document.getElementById('totalAttendees');
+    const checkedIn = document.getElementById('checkedIn');
+    const pending = document.getElementById('pending');
+    
+    // Toast function
+    function showToast(message, type = 'info') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <div class="toast-icon">
+          <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+        </div>
+        <div class="toast-message">${message}</div>
+        <button class="toast-close">&times;</button>
+      `;
+      
+      document.getElementById('toastContainer').appendChild(toast);
+      
+      // Close toast on button click
+      toast.querySelector('.toast-close').addEventListener('click', () => {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      });
+      
+      // Auto remove after 5 seconds
+      setTimeout(() => {
+        if (toast.parentNode) {
+          toast.style.animation = 'slideOut 0.3s ease';
+          setTimeout(() => toast.remove(), 300);
+        }
+      }, 5000);
+    }
+    
+    // Start scanner function
+    async function startScanner() {
+      try {
+        scannerStatus.textContent = 'Starting camera...';
+        
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: facingMode }
+        });
+        
+        currentStream = stream;
+        video.srcObject = stream;
+        scannerActive = true;
+        startScannerBtn.innerHTML = '<i class="fas fa-stop"></i> Stop Scanner';
+        scannerStatus.textContent = 'Scanner active. Point at a QR code.';
+        
+        // Start scanning for QR codes
+        scanQRCode();
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+        scannerStatus.textContent = 'Cannot access camera. Please check permissions.';
+        showToast('Camera access denied. Please check permissions.', 'error');
+      }
+    }
+    
+    // Stop scanner function
+    function stopScanner() {
+      if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+        currentStream = null;
+      }
+      
+      video.srcObject = null;
+      scannerActive = false;
+      startScannerBtn.innerHTML = '<i class="fas fa-camera"></i> Start Scanner';
+      scannerStatus.textContent = 'Scanner not active. Click "Start Scanner" to begin.';
+    }
+    
+    // Switch camera function
+    async function switchCamera() {
+      stopScanner();
+      facingMode = facingMode === 'environment' ? 'user' : 'environment';
+      await startScanner();
+    }
+    
+    // QR code scanning function
+    function scanQRCode() {
+      if (!scannerActive) return;
+      
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      
+      function tick() {
+        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+          canvas.height = video.videoHeight;
+          canvas.width = video.videoWidth;
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+          
+          const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+          const code = jsQR(imageData.data, imageData.width, imageData.height, {
+            inversionAttempts: 'dontInvert',
+          });
+          
+          if (code) {
+            // QR code detected!
+            processCheckIn(code.data);
+          }
+        }
+        
+        if (scannerActive) {
+          requestAnimationFrame(tick);
+        }
+      }
+      
+      requestAnimationFrame(tick);
+    }
+    
+    // Process check-in function
+    function processCheckIn(code) {
+      // Simulate API call to check in attendee
+      console.log('Processing check-in for:', code);
+      
+      // For demo purposes, we'll simulate a response
+      const responses = [
+        { success: true, name: 'John Doe', email: 'john@example.com', event: 'Tech Conference 2023', time: new Date().toLocaleTimeString(), status: 'checked-in' },
+        { success: true, name: 'Jane Smith', email: 'jane@example.com', event: 'Tech Conference 2023', time: new Date().toLocaleTimeString(), status: 'checked-in' },
+        { success: false, error: 'Already checked in', name: 'Bob Johnson', email: 'bob@example.com', event: 'Tech Conference 2023', time: new Date().toLocaleTimeString(), status: 'duplicate' },
+        { success: false, error: 'Invalid ticket', status: 'error' }
+      ];
+      
+      const response = responses[Math.floor(Math.random() * responses.length)];
+      
+      if (response.success) {
+        showToast(`Successfully checked in ${response.name}`, 'success');
+        addCheckInResult(response);
+        updateStats();
+      } else {
+        showToast(response.error || 'Check-in failed', 'error');
+        if (response.name) {
+          addCheckInResult(response);
+        }
+      }
+      
+      // In a real app, you would make an API call to your backend:
+      /*
+      fetch('/api/checkin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code: code, event_id: document.getElementById('eventSelect').value })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          showToast(`Successfully checked in ${data.attendee.name}`, 'success');
+          addCheckInResult(data.attendee);
+          updateStats();
+        } else {
+          showToast(data.error, 'error');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showToast('Check-in failed. Please try again.', 'error');
+      });
+      */
+    }
+    
+    // Add check-in result to the list
+    function addCheckInResult(result) {
+      const resultItem = document.createElement('div');
+      resultItem.className = 'result-item';
+      
+      const initials = result.name ? result.name.split(' ').map(n => n[0]).join('') : 'N/A';
+      
+      resultItem.innerHTML = `
+        <div class="result-avatar">${initials}</div>
+        <div class="result-info">
+          <div class="result-name">${result.name || 'Unknown'}</div>
+          <div class="result-details">${result.email || ''} ${result.event ? '• ' + result.event : ''}</div>
+          <div class="result-time">${result.time}</div>
+        </div>
+        <div class="result-status status-${result.status}">${result.status.replace('-', ' ')}</div>
+      `;
+      
+      resultsList.insertBefore(resultItem, resultsList.firstChild);
+      
+      // Remove the placeholder if it exists
+      const placeholder = resultsList.querySelector('p');
+      if (placeholder) {
+        placeholder.remove();
+      }
+      
+      // Update results count
+      resultsCount.textContent = parseInt(resultsCount.textContent) + 1;
+    }
+    
+    // Update stats
+    function updateStats() {
+      // In a real app, you would get these values from your backend
+      totalAttendees.textContent = Math.floor(Math.random() * 100) + 50;
+      checkedIn.textContent = Math.floor(Math.random() * 50) + 10;
+      pending.textContent = totalAttendees.textContent - checkedIn.textContent;
+    }
+    
+    // Event listeners
+    startScannerBtn.addEventListener('click', () => {
+      if (scannerActive) {
+        stopScanner();
+      } else {
+        startScanner();
+      }
+    });
+    
+    switchCameraBtn.addEventListener('click', switchCamera);
+    
+    manualSubmit.addEventListener('click', () => {
+      if (manualInput.value.trim()) {
+        processCheckIn(manualInput.value.trim());
+        manualInput.value = '';
+      }
+    });
+    
+    manualInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        manualSubmit.click();
+      }
+    });
+    
+    // Initialize stats
+    updateStats();
+  </script>
+</body>
+</html>

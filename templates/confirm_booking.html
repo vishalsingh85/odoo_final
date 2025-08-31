@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirm Booking - EventHive</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3a0ca3;
+      --accent: #f72585;
+      --success: #4cc9f0;
+      --warning: #f9c74f;
+      --danger: #f94144;
+      --dark: #2b2d42;
+      --light: #f8f9fa;
+      --gray-100: #f8f9fa;
+      --gray-200: #e9ecef;
+      --gray-300: #dee2e6;
+      --gray-400: #ced4da;
+      --gray-500: #adb5bd;
+      --gray-600: #6c757d;
+      --gray-700: #495057;
+      --gray-800: #343a40;
+      --gray-900: #212529;
+      --border-radius: 12px;
+      --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.05), 0 6px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f5f7fb;
+      color: var(--gray-800);
+      line-height: 1.6;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .logo-icon {
+      margin-right: 10px;
+      font-size: 2.2rem;
+    }
+
+    .page-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+      color: var(--gray-600);
+      font-size: 1rem;
+    }
+
+    /* Booking Container */
+    .booking-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .booking-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Event Card */
+    .event-card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+    }
+
+    .event-image {
+      height: 200px;
+      overflow: hidden;
+    }
+
+    .event-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .event-info {
+      padding: 1.5rem;
+    }
+
+    .event-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--dark);
+    }
+
+    .event-details {
+      margin-bottom: 1.5rem;
+    }
+
+    .event-detail {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.8rem;
+      color: var(--gray-700);
+    }
+
+    .event-detail i {
+      margin-right: 0.8rem;
+      color: var(--primary);
+      width: 20px;
+    }
+
+    /* Booking Summary */
+    .booking-summary {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--card-shadow);
+    }
+
+    .summary-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+    }
+
+    .summary-title i {
+      margin-right: 0.5rem;
+      color: var(--primary);
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .summary-label {
+      color: var(--gray-600);
+    }
+
+    .summary-value {
+      font-weight: 600;
+    }
+
+    .summary-total {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 2px solid var(--gray-300);
+    }
+
+    .total-label {
+      color: var(--dark);
+    }
+
+    .total-amount {
+      color: var(--primary);
+    }
+
+    /* Booking Form */
+    .booking-form {
+      margin-top: 2rem;
+    }
+
+    .form-note {
+      background-color: rgba(76, 201, 240, 0.1);
+      border-left: 4px solid var(--success);
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    .form-note i {
+      color: var(--success);
+      margin-right: 0.5rem;
+    }
+
+    .btn-container {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn-confirm {
+      flex: 1;
+      padding: 1rem;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-confirm:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-back {
+      padding: 1rem 1.5rem;
+      background-color: var(--gray-200);
+      color: var(--gray-700);
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-back:hover {
+      background-color: var(--gray-300);
+      transform: translateX(-3px);
+    }
+
+    /* Refund Policy */
+    .refund-policy {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background-color: var(--gray-100);
+      border-radius: var(--border-radius);
+      font-size: 0.85rem;
+      color: var(--gray-600);
+    }
+
+    .policy-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--dark);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 2rem;
+      color: var(--gray-500);
+      font-size: 0.9rem;
+    }
+
+    /* Animation */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    .event-card, .booking-summary {
+      animation: pulse 2s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">
+        <span class="logo-icon">🎩</span>
+        EventHive
+      </div>
+      <h1 class="page-title">Confirm Your Booking</h1>
+      <p class="page-subtitle">Review your event details before confirming</p>
+    </div>
+
+    <!-- Booking Container -->
+    <div class="booking-container">
+      <!-- Event Card -->
+      <div class="event-card">
+        <div class="event-image">
+          <img src="{{ url_for('static', filename='images/' ~ (event.image if event.image else 'default.jpg')) }}" alt="{{ event.name }}">
+        </div>
+        <div class="event-info">
+          <h2 class="event-title">{{ event.name }}</h2>
+          
+          <div class="event-details">
+            <div class="event-detail">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>{{ event.location }}</span>
+            </div>
+            
+            <div class="event-detail">
+              <i class="fas fa-tag"></i>
+              <span>{{ event.category }}</span>
+            </div>
+            
+            <div class="event-detail">
+              <i class="fas fa-calendar-day"></i>
+              <span>{{ event.start_date.strftime('%A, %B %d, %Y') }}</span>
+            </div>
+            
+            <div class="event-detail">
+              <i class="fas fa-clock"></i>
+              <span>{{ event.start_date.strftime('%I:%M %p') }} - {{ event.end_date.strftime('%I:%M %p') }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Booking Summary -->
+      <div class="booking-summary">
+        <h2 class="summary-title">
+          <i class="fas fa-receipt"></i> Booking Summary
+        </h2>
+
+        <div class="summary-item">
+          <span class="summary-label">Ticket Type</span>
+          <span class="summary-value">General Admission</span>
+        </div>
+
+        <div class="summary-item">
+          <span class="summary-label">Quantity</span>
+          <span class="summary-value">1 Ticket</span>
+        </div>
+
+        <div class="summary-item">
+          <span class="summary-label">Price per Ticket</span>
+          <span class="summary-value">₹499.00</span>
+        </div>
+
+        <div class="summary-item">
+          <span class="summary-label">Service Fee</span>
+          <span class="summary-value">₹49.00</span>
+        </div>
+
+        <div class="summary-total">
+          <span class="total-label">Total Amount</span>
+          <span class="total-amount">₹548.00</span>
+        </div>
+
+        <!-- Booking Form -->
+        <div class="booking-form">
+          <div class="form-note">
+            <i class="fas fa-info-circle"></i>
+            You will be redirected to a secure payment page after confirmation
+          </div>
+
+          <form action="{{ url_for('book_event', event_id=event.id) }}" method="POST">
+            <div class="btn-container">
+              <button type="submit" class="btn-confirm">
+                <i class="fas fa-check-circle"></i> Confirm & Pay
+              </button>
+              <a href="{{ url_for('dashboard') }}" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back
+              </a>
+            </div>
+          </form>
+        </div>
+
+        <!-- Refund Policy -->
+        <div class="refund-policy">
+          <div class="policy-title">Refund Policy</div>
+          <p>Tickets are refundable up to 24 hours before the event starts. A processing fee of ₹50 may apply for all refunds.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>© 2023 EventHive. All rights reserved. | <a href="#" style="color: var(--primary); text-decoration: none;">Privacy Policy</a> | <a href="#" style="color: var(--primary); text-decoration: none;">Terms of Service</a></p>
+    </div>
+  </div>
+
+  <script>
+    // Add subtle animation to the confirm button
+    const confirmBtn = document.querySelector('.btn-confirm');
+    
+    if (confirmBtn) {
+      confirmBtn.addEventListener('mouseover', () => {
+        confirmBtn.style.transform = 'translateY(-2px)';
+        confirmBtn.style.boxShadow = '0 6px 12px rgba(67, 97, 238, 0.3)';
+      });
+      
+      confirmBtn.addEventListener('mouseout', () => {
+        confirmBtn.style.transform = 'translateY(0)';
+        confirmBtn.style.boxShadow = '0 4px 8px rgba(67, 97, 238, 0.3)';
+      });
+    }
+    
+    // Add animation to cards
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.event-card, .booking-summary');
+      cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.2}s`;
+      });
+    });
+  </script>
+</body>
+</html>

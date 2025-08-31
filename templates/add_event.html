@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add New Event | EventHive Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3a0ca3;
+      --accent: #f72585;
+      --success: #4cc9f0;
+      --warning: #f9c74f;
+      --danger: #f94144;
+      --dark: #2b2d42;
+      --light: #f8f9fa;
+      --gray-100: #f8f9fa;
+      --gray-200: #e9ecef;
+      --gray-300: #dee2e6;
+      --gray-400: #ced4da;
+      --gray-500: #adb5bd;
+      --gray-600: #6c757d;
+      --gray-700: #495057;
+      --gray-800: #343a40;
+      --gray-900: #212529;
+      --sidebar-width: 260px;
+      --border-radius: 12px;
+      --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.05), 0 6px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f5f7fb;
+      color: var(--gray-800);
+      line-height: 1.6;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: linear-gradient(to bottom, var(--primary), var(--secondary));
+      color: white;
+      padding: 1.5rem 1rem;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      transition: var(--transition);
+      z-index: 1000;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding: 0 0.5rem;
+    }
+
+    .sidebar-header .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-icon {
+      margin-right: 10px;
+      font-size: 1.8rem;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      margin-top: 2rem;
+    }
+
+    .sidebar-menu li {
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      padding: 0.8rem 1rem;
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+    }
+
+    .sidebar-menu a:hover, .sidebar-menu a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .sidebar-menu i {
+      margin-right: 0.8rem;
+      font-size: 1.2rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 1.5rem 2rem;
+      transition: var(--transition);
+    }
+
+    /* Top Navigation */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      background-color: white;
+      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+    }
+
+    .page-title h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .page-title p {
+      color: var(--gray-600);
+      font-size: 0.9rem;
+    }
+
+    /* Form Styles */
+    .form-container {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      box-shadow: var(--card-shadow);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--border-radius);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    /* File Upload Styles */
+    .file-upload {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .file-upload-input {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .file-upload-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      border: 2px dashed var(--gray-300);
+      border-radius: var(--border-radius);
+      background-color: var(--gray-100);
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .file-upload-label:hover {
+      border-color: var(--primary);
+      background-color: rgba(67, 97, 238, 0.05);
+    }
+
+    .file-upload-icon {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .file-upload-text {
+      color: var(--gray-600);
+    }
+
+    .file-upload-text strong {
+      color: var(--primary);
+    }
+
+    .file-preview {
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .file-preview img {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+    }
+
+    /* Switch Styles */
+    .switch-container {
+      display: flex;
+      align-items: center;
+      margin-top: 2.5rem;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+      margin-right: 10px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--gray-300);
+      transition: var(--transition);
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: var(--transition);
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--success);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    /* Form Actions */
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.7rem 1.5rem;
+      background-color: var(--gray-200);
+      color: var(--gray-700);
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .btn-back:hover {
+      background-color: var(--gray-300);
+    }
+
+    .btn-submit {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.7rem 1.5rem;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+    }
+
+    /* Flash Messages */
+    .flash-messages {
+      margin-bottom: 1.5rem;
+    }
+
+    .flash-message {
+      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      transition: var(--transition);
+    }
+
+    .flash-message.success {
+      background-color: rgba(76, 201, 240, 0.2);
+      color: var(--success);
+      border-left: 4px solid var(--success);
+    }
+
+    .flash-message.danger {
+      background-color: rgba(249, 65, 68, 0.2);
+      color: var(--danger);
+      border-left: 4px solid var(--danger);
+    }
+
+    .flash-message.info {
+      background-color: rgba(67, 97, 238, 0.2);
+      color: var(--primary);
+      border-left: 4px solid var(--primary);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+        width: 0;
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .sidebar.active {
+        transform: translateX(0);
+        width: var(--sidebar-width);
+      }
+      
+      .menu-toggle {
+        display: block;
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        z-index: 1100;
+        background-color: var(--primary);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .top-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .btn-back, .btn-submit {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">🎩</span>
+        EventHive Admin
+      </div>
+    </div>
+    
+    <ul class="sidebar-menu">
+      <li><a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="{{ url_for('add_event') }}" class="active"><i class="fas fa-calendar-plus"></i> Add Event</a></li>
+      <li><a href="#"><i class="fas fa-users"></i> Attendees</a></li>
+      <li><a href="#"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+      <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+      <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </div>
+  
+  <div class="menu-toggle">
+    <i class="fas fa-bars"></i>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Top Navigation -->
+    <div class="top-nav">
+      <div class="page-title">
+        <h1>Add New Event</h1>
+        <p>Create and manage events for your audience</p>
+      </div>
+    </div>
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+            <div class="flash-message {{ category }}">
+              <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'danger' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+              <span style="margin-left: 10px;">{{ message }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    
+    <!-- Form Container -->
+    <div class="form-container">
+      <form method="POST" action="{{ url_for('add_event') }}" enctype="multipart/form-data">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="name">Event Name</label>
+            <input type="text" id="name" name="name" placeholder="Enter event name" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="location">Location (Address / Venue)</label>
+            <input type="text" id="location" name="location" placeholder="Enter location" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="latitude">Latitude</label>
+            <input type="text" id="latitude" name="latitude" placeholder="Ex: 28.6139" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="longitude">Longitude</label>
+            <input type="text" id="longitude" name="longitude" placeholder="Ex: 77.2090" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="start_date">Start Date & Time</label>
+            <input type="datetime-local" id="start_date" name="start_date" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="end_date">End Date & Time</label>
+            <input type="datetime-local" id="end_date" name="end_date" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category" name="category" required>
+              <option value="">-- Select Category --</option>
+              <option value="Music">🎶 Music</option>
+              <option value="Sports">⚽ Sports</option>
+              <option value="Exhibition">🎨 Exhibition</option>
+              <option value="Conference">💼 Conference</option>
+              <option value="Workshop">🛠 Workshop</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="registration_start">Registration Start</label>
+            <input type="datetime-local" id="registration_start" name="registration_start" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="registration_end">Registration End</label>
+            <input type="datetime-local" id="registration_end" name="registration_end" required>
+          </div>
+          
+          <div class="switch-container">
+            <label class="switch">
+              <input type="checkbox" name="publish_status" id="publishSwitch" checked>
+              <span class="slider"></span>
+            </label>
+            <label for="publishSwitch">Publish Event</label>
+          </div>
+        </div>
+        
+        <!-- Image Upload Section -->
+        <div class="form-group">
+          <label for="event_image">Event Image</label>
+          <div class="file-upload">
+            <input type="file" id="event_image" name="event_image" class="file-upload-input" accept="image/*">
+            <label for="event_image" class="file-upload-label">
+              <i class="fas fa-cloud-upload-alt file-upload-icon"></i>
+              <span class="file-upload-text">Click to upload or drag and drop<br><strong>PNG, JPG, GIF</strong> up to 5MB</span>
+            </label>
+          </div>
+          <div class="file-preview" id="imagePreview">
+            <img src="" alt="Preview" id="previewImage">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" placeholder="Write event details..." required></textarea>
+        </div>
+        
+        <div class="form-actions">
+          <a href="{{ url_for('admin_dashboard') }}" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+          </a>
+          <button type="submit" class="btn-submit">
+            <i class="fas fa-plus"></i> Create Event
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Mobile menu toggle
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    
+    if (menuToggle) {
+      menuToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('active');
+      });
+    }
+    
+    // Auto-hide flash messages after 5 seconds
+    setTimeout(() => {
+      const flashMessages = document.querySelectorAll('.flash-message');
+      flashMessages.forEach(msg => {
+        msg.style.opacity = '0';
+        setTimeout(() => msg.remove(), 1000);
+      });
+    }, 5000);
+    
+    // Form validation
+    const form = document.querySelector('form');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        const startDate = new Date(document.getElementById('start_date').value);
+        const endDate = new Date(document.getElementById('end_date').value);
+        const regStart = new Date(document.getElementById('registration_start').value);
+        const regEnd = new Date(document.getElementById('registration_end').value);
+        
+        if (endDate <= startDate) {
+          e.preventDefault();
+          alert('End date must be after start date');
+          return false;
+        }
+        
+        if (regEnd <= regStart) {
+          e.preventDefault();
+          alert('Registration end must be after registration start');
+          return false;
+        }
+        
+        if (regEnd >= startDate) {
+          e.preventDefault();
+          alert('Registration should end before the event starts');
+          return false;
+        }
+      });
+    }
+    
+    // Image preview functionality
+    const eventImageInput = document.getElementById('event_image');
+    const imagePreview = document.getElementById('imagePreview');
+    const previewImage = document.getElementById('previewImage');
+    
+    if (eventImageInput) {
+      eventImageInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+          const reader = new FileReader();
+          
+          reader.addEventListener('load', function() {
+            previewImage.setAttribute('src', this.result);
+            imagePreview.style.display = 'block';
+          });
+          
+          reader.readAsDataURL(file);
+        } else {
+          imagePreview.style.display = 'none';
+        }
+      });
+    }
+    
+    // Drag and drop functionality
+    const fileUploadLabel = document.querySelector('.file-upload-label');
+    
+    if (fileUploadLabel) {
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        fileUploadLabel.addEventListener(eventName, preventDefaults, false);
+      });
+      
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      
+      ['dragenter', 'dragover'].forEach(eventName => {
+        fileUploadLabel.addEventListener(eventName, highlight, false);
+      });
+      
+      ['dragleave', 'drop'].forEach(eventName => {
+        fileUploadLabel.addEventListener(eventName, unhighlight, false);
+      });
+      
+      function highlight() {
+        fileUploadLabel.style.borderColor = var(--primary);
+        fileUploadLabel.style.backgroundColor = rgba(67, 97, 238, 0.1);
+      }
+      
+      function unhighlight() {
+        fileUploadLabel.style.borderColor = var(--gray-300);
+        fileUploadLabel.style.backgroundColor = var(--gray-100);
+      }
+      
+      fileUploadLabel.addEventListener('drop', handleDrop, false);
+      
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        eventImageInput.files = files;
+        
+        // Trigger change event
+        const event = new Event('change');
+        eventImageInput.dispatchEvent(event);
+      }
+    }
+  </script>
+</body>
+</html>

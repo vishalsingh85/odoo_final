@@ -1,0 +1,30 @@
+.attendees-list {
+  margin: 20px;
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.attendees-list table {
+  width: 100%;
+  border-collapse: collapse;
+  color: white;
+}
+
+.attendees-list th, .attendees-list td {
+  padding: 10px;
+  border-bottom: 1px solid #444;
+  text-align: left;
+}
+
+.btn-view {
+  background: #28a745;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.btn-view:hover {
+  background: #1e7e34;
+}
