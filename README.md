@@ -120,6 +120,8 @@ The MVP is designed to deliver an end-to-end usable product with essential featu
 
 ## 📅 VIDEO LINK
 
+https://drive.google.com/file/d/1VDnVjo20QNJD3fp1mEOxboydZGixqyjS/view?usp=sharing
+
 ---
 
 💡 EventHive MVP focuses on simplicity + usability → so that organizers can host events and attendees can experience a smooth booking journey without unnecessary overhead.
