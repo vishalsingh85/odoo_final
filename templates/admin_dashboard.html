@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Premium Admin Dashboard - EventHive</title>
+  <title>Admin Dashboard | EventHive</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -140,291 +140,285 @@
       font-size: 0.9rem;
     }
 
-    .nav-right {
+    .user-info {
       display: flex;
       align-items: center;
       gap: 1rem;
     }
 
-    .add-event-btn {
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
       background: linear-gradient(to right, var(--primary), var(--secondary));
-      color: white;
-      border: none;
-      padding: 0.7rem 1.5rem;
-      border-radius: var(--border-radius);
-      font-weight: 600;
-      cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      transition: var(--transition);
-      text-decoration: none;
-    }
-
-    .add-event-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
-    }
-
-    /* Filters */
-    .filters {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      background-color: white;
-      padding: 1rem 1.5rem;
-      border-radius: var(--border-radius);
-      margin-bottom: 2rem;
-      box-shadow: var(--card-shadow);
-    }
-
-    .filters select, .filters input {
-      padding: 0.7rem 1rem;
-      border: 1px solid var(--gray-300);
-      border-radius: var(--border-radius);
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.9rem;
-    }
-
-    .filter-btn {
-      background-color: var(--primary);
+      justify-content: center;
       color: white;
-      border: none;
-      padding: 0.7rem 1.5rem;
-      border-radius: var(--border-radius);
-      cursor: pointer;
       font-weight: 600;
-      transition: var(--transition);
     }
 
-    .filter-btn:hover {
-      background-color: var(--secondary);
-    }
-
-    /* Event Grid */
-    .event-grid {
+    /* Stats Grid */
+    .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 1.5rem;
       margin-bottom: 2rem;
     }
 
-    .event-card {
+    .stat-card {
+      background-color: white;
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .stat-icon.users { background-color: rgba(76, 201, 240, 0.2); color: var(--success); }
+    .stat-icon.events { background-color: rgba(249, 201, 79, 0.2); color: var(--warning); }
+    .stat-icon.bookings { background-color: rgba(67, 97, 238, 0.2); color: var(--primary); }
+    .stat-icon.revenue { background-color: rgba(247, 37, 133, 0.2); color: var(--accent); }
+
+    .stat-content h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-content p {
+      color: var(--gray-600);
+      font-size: 0.9rem;
+    }
+
+    /* Events Section */
+    .events-section {
       background-color: white;
       border-radius: var(--border-radius);
-      overflow: hidden;
+      padding: 2rem;
       box-shadow: var(--card-shadow);
+      margin-bottom: 2rem;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .filters {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .filter-select {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--border-radius);
+      background-color: white;
+    }
+
+    /* Events Grid */
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .event-card {
+      border: 1px solid var(--gray-200);
+      border-radius: var(--border-radius);
+      overflow: hidden;
       transition: var(--transition);
     }
 
     .event-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+      box-shadow: var(--card-shadow);
     }
 
-    .event-image-wrap {
-      position: relative;
-      height: 180px;
-      overflow: hidden;
-    }
-
-    .event-img {
+    .event-image {
       width: 100%;
-      height: 100%;
+      height: 200px;
       object-fit: cover;
-      transition: var(--transition);
+      border-bottom: 1px solid var(--gray-200);
     }
 
-    .event-card:hover .event-img {
-      transform: scale(1.05);
-    }
-
-    .event-badge {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background-color: var(--primary);
-      color: white;
-      padding: 0.3rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-
-    .event-info {
+    .event-content {
       padding: 1.5rem;
     }
 
-    .event-info h3 {
-      font-size: 1.2rem;
-      margin-bottom: 0.8rem;
+    .event-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
       color: var(--dark);
     }
 
-    .date {
-      color: var(--gray-600);
-      font-size: 0.9rem;
-      margin-bottom: 0.8rem;
+    .event-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .event-detail {
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      color: var(--gray-600);
+      font-size: 0.9rem;
     }
 
-    .date i {
+    .event-detail i {
+      width: 16px;
       color: var(--primary);
     }
 
-    .desc {
-      color: var(--gray-700);
-      margin-bottom: 1rem;
-      font-size: 0.95rem;
-      line-height: 1.5;
+    .event-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
     }
 
-    .location {
-      display: flex;
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      color: var(--gray-600);
       font-size: 0.9rem;
-      margin-bottom: 1rem;
     }
 
-    .status-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.2rem;
+    .btn-sm {
+      padding: 0.25rem 0.75rem;
+      font-size: 0.8rem;
     }
 
-    .status {
-      padding: 0.3rem 0.8rem;
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--secondary);
+    }
+
+    .btn-secondary {
+      background-color: var(--gray-200);
+      color: var(--gray-700);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--gray-300);
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: #d32f2f;
+    }
+
+    .btn-success {
+      background-color: var(--success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background-color: #0294b8;
+    }
+
+    .status-badge {
+      padding: 0.25rem 0.75rem;
       border-radius: 20px;
       font-size: 0.8rem;
       font-weight: 600;
     }
 
-    .status.published {
+    .status-published {
       background-color: rgba(76, 201, 240, 0.2);
       color: var(--success);
     }
 
-    .status.unpublished {
-      background-color: rgba(249, 65, 68, 0.2);
-      color: var(--danger);
+    .status-draft {
+      background-color: rgba(249, 201, 79, 0.2);
+      color: var(--warning);
     }
 
-    .actions {
-      display: flex;
-      gap: 0.8rem;
-    }
-
-    .actions a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.5rem;
-      border-radius: 8px;
-      color: var(--gray-600);
-      text-decoration: none;
-      transition: var(--transition);
-      font-size: 0.9rem;
-    }
-
-    .btn-edit:hover {
-      background-color: rgba(67, 97, 238, 0.1);
-      color: var(--primary);
-    }
-
-    .btn-delete:hover {
-      background-color: rgba(249, 65, 68, 0.1);
-      color: var(--danger);
-    }
-
-    .btn-attendees:hover {
-      background-color: rgba(76, 201, 240, 0.1);
-      color: var(--success);
-    }
-
-    /* Profile Section */
-    .profile-section {
-      position: relative;
-    }
-
-    .profile-pic {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      object-fit: cover;
-      cursor: pointer;
-      border: 2px solid var(--gray-300);
-      transition: var(--transition);
-    }
-
-    .profile-pic:hover {
-      border-color: var(--primary);
-    }
-
-    .upload-form {
-      display: none;
-      position: absolute;
-      top: 100%;
-      right: 0;
+    /* Recent Events */
+    .recent-events {
       background-color: white;
-      padding: 1rem;
       border-radius: var(--border-radius);
+      padding: 2rem;
       box-shadow: var(--card-shadow);
-      z-index: 100;
-      width: 250px;
-      margin-top: 0.5rem;
     }
 
-    .upload-form input {
-      width: 100%;
-      margin-bottom: 0.8rem;
-      padding: 0.5rem;
-      border: 1px solid var(--gray-300);
-      border-radius: 6px;
-    }
-
-    .upload-form button {
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    /* Pagination */
-    .pagination {
+    .recent-events-list {
       display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-top: 2rem;
+      flex-direction: column;
+      gap: 1rem;
     }
 
-    .pagination a {
+    .recent-event-item {
       display: flex;
       align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      text-decoration: none;
-      color: var(--gray-700);
-      font-weight: 600;
+      gap: 1rem;
+      padding: 1rem;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--border-radius);
       transition: var(--transition);
     }
 
-    .pagination a:hover {
-      background-color: var(--gray-200);
+    .recent-event-item:hover {
+      background-color: var(--gray-100);
     }
 
-    .pagination a.active {
-      background-color: var(--primary);
-      color: white;
+    .recent-event-image {
+      width: 60px;
+      height: 60px;
+      border-radius: var(--border-radius);
+      object-fit: cover;
+    }
+
+    .recent-event-content {
+      flex: 1;
+    }
+
+    .recent-event-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .recent-event-details {
+      font-size: 0.8rem;
+      color: var(--gray-600);
     }
 
     /* Responsive */
@@ -469,12 +463,26 @@
         gap: 1rem;
       }
       
-      .filters {
-        flex-wrap: wrap;
+      .stats-grid {
+        grid-template-columns: 1fr;
       }
       
-      .event-grid {
+      .events-grid {
         grid-template-columns: 1fr;
+      }
+      
+      .filters {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .event-actions {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+        justify-content: center;
       }
     }
   </style>
@@ -494,6 +502,7 @@
       <li><a href="{{ url_for('add_event') }}"><i class="fas fa-calendar-plus"></i> Add Event</a></li>
       <li><a href="#"><i class="fas fa-users"></i> Attendees</a></li>
       <li><a href="#"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+      <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
       <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
     </ul>
   </div>
@@ -507,42 +516,19 @@
     <!-- Top Navigation -->
     <div class="top-nav">
       <div class="page-title">
-        <h1>Event Management</h1>
-        <p>Manage and monitor all your events in one place</p>
+        <h1>Admin Dashboard</h1>
+        <p>Manage your events and view analytics</p>
       </div>
-      
-      <div class="nav-right">
-        <a href="{{ url_for('add_event') }}" class="add-event-btn">
-          <i class="fas fa-plus"></i> Add Event
-        </a>
-        
-        <div class="profile-section">
-          <img src="{{ url_for('static', filename='uploads/' ~ (session.get('profile_pic') or 'default.png')) }}" class="profile-pic" onclick="toggleUploadForm()">
-          <form action="{{ url_for('upload_profile_pic') }}" method="POST" enctype="multipart/form-data" class="upload-form" id="uploadForm">
-            <input type="file" name="profile_pic" accept="image/*" required>
-            <button type="submit">Upload</button>
-          </form>
+      <div class="user-info">
+        <div class="user-avatar">
+          {{ session.user[0] if session.user else 'A' }}
+        </div>
+        <div>
+          <div style="font-weight: 600;">{{ session.user }}</div>
+          <div style="font-size: 0.8rem; color: var(--gray-600);">Administrator</div>
         </div>
       </div>
     </div>
-    
-    <!-- Filters -->
-    <form method="GET" action="{{ url_for('admin_dashboard') }}" class="filters">
-      <select name="category">
-        <option value="">All Categories</option>
-        <option value="Music" {% if request.args.get('category') == 'Music' %}selected{% endif %}>Music</option>
-        <option value="Sports" {% if request.args.get('category') == 'Sports' %}selected{% endif %}>Sports</option>
-        <option value="Exhibition" {% if request.args.get('category') == 'Exhibition' %}selected{% endif %}>Exhibition</option>
-      </select>
-      
-      <select name="date">
-        <option value="">All Dates</option>
-        <option value="today" {% if request.args.get('date') == 'today' %}selected{% endif %}>Today</option>
-        <option value="week" {% if request.args.get('date') == 'week' %}selected{% endif %}>This Week</option>
-      </select>
-      
-      <button type="submit" class="filter-btn">Apply Filters</button>
-    </form>
     
     <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -550,69 +536,172 @@
         <div class="flash-messages">
           {% for category, message in messages %}
             <div class="flash-message {{ category }}">
-              {{ message }}
+              <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'danger' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+              <span style="margin-left: 10px;">{{ message }}</span>
             </div>
           {% endfor %}
         </div>
       {% endif %}
     {% endwith %}
     
-    <!-- Event Grid -->
-    <div class="event-grid">
-      {% for event in events %}
-      <div class="event-card">
-        <div class="event-image-wrap">
-          <img src="{{ url_for('static', filename='images/' ~ (event.image if event.image else 'default.jpg')) }}" alt="Event Image" class="event-img">
-          {% if event.category %}
-            <span class="event-badge">{{ event.category }}</span>
-          {% endif %}
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon users">
+          <i class="fas fa-users"></i>
         </div>
-        <div class="event-info">
-          <h3>{{ event.name }}</h3>
-          <p class="date"><i class="far fa-calendar-alt"></i> {{ event.start_date }} - {{ event.end_date }}</p>
-          <p class="desc">{{ event.description }}</p>
-          <p class="location"><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
-          <div class="status-bar">
-            <span class="status {{ 'published' if event.publish_status else 'unpublished' }}">
-              {{ "Published" if event.publish_status else "Unpublished" }}
-            </span>
-            <a href="{{ url_for('toggle_publish', event_id=event.id) }}" class="toggle-publish">
-              {{ "Unpublish" if event.publish_status else "Publish" }}
-            </a>
-          </div>
-          <div class="actions">
-            <a href="{{ url_for('edit_event', event_id=event.id) }}" class="btn-edit"><i class="fas fa-edit"></i> Edit</a>
-            <a href="{{ url_for('delete_event', event_id=event.id) }}" class="btn-delete" onclick="return confirm('Are you sure you want to delete this event?');"><i class="fas fa-trash"></i> Delete</a>
-            <a href="{{ url_for('view_attendees', event_id=event.id) }}" class="btn-attendees"><i class="fas fa-users"></i> Attendees</a>
-          </div>
+        <div class="stat-content">
+          <h3>{{ total_users }}</h3>
+          <p>Total Users</p>
         </div>
       </div>
-      {% else %}
-      <div class="no-events">
-        <p>No events found. <a href="{{ url_for('add_event') }}">Create your first event</a></p>
+      
+      <div class="stat-card">
+        <div class="stat-icon events">
+          <i class="fas fa-calendar"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ total_events }}</h3>
+          <p>Total Events</p>
+        </div>
       </div>
-      {% endfor %}
+      
+      <div class="stat-card">
+        <div class="stat-icon bookings">
+          <i class="fas fa-ticket-alt"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ total_bookings }}</h3>
+          <p>Total Bookings</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon revenue">
+          <i class="fas fa-rupee-sign"></i>
+        </div>
+        <div class="stat-content">
+          <h3>₹{{ total_revenue }}</h3>
+          <p>Total Revenue</p>
+        </div>
+      </div>
     </div>
     
-    <!-- Pagination would go here if implemented -->
+    <!-- Events Section -->
+    <div class="events-section">
+      <div class="section-header">
+        <h2 class="section-title">All Events</h2>
+        <div class="filters">
+          <select class="filter-select" onchange="filterEvents('category', this.value)">
+            <option value="">All Categories</option>
+            <option value="Music">Music</option>
+            <option value="Sports">Sports</option>
+            <option value="Arts">Arts & Culture</option>
+            <option value="Business">Business</option>
+            <option value="Education">Education</option>
+            <option value="Technology">Technology</option>
+            <option value="Food">Food & Drink</option>
+            <option value="Health">Health & Wellness</option>
+          </select>
+          <select class="filter-select" onchange="filterEvents('date', this.value)">
+            <option value="">All Dates</option>
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+          </select>
+          <a href="{{ url_for('add_event') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add Event
+          </a>
+        </div>
+      </div>
+      
+      <div class="events-grid">
+        {% for event in events %}
+        <div class="event-card">
+          <!-- ✅ FIXED: Proper image display with fallback -->
+          <img 
+            src="{{ url_for('static', filename='uploads/' + event.image_path) if event.image_path and event.image_path != 'default_event.jpg' else url_for('static', filename='images/default_event.jpg') }}" 
+            alt="{{ event.name }}" 
+            class="event-image"
+            onerror="this.src='{{ url_for('static', filename='images/default_event.jpg') }}'"
+          >
+          <div class="event-content">
+            <h3 class="event-title">{{ event.name }}</h3>
+            <div class="event-details">
+              <div class="event-detail">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>{{ event.location }}</span>
+              </div>
+              <div class="event-detail">
+                <i class="fas fa-calendar"></i>
+                <span>{{ event.start_date.strftime('%b %d, %Y %I:%M %p') if event.start_date else 'Date TBD' }}</span>
+              </div>
+              <div class="event-detail">
+                <i class="fas fa-tag"></i>
+                <span>{{ event.category }}</span>
+              </div>
+            </div>
+            <div class="event-actions">
+              <span class="status-badge {{ 'status-published' if event.publish_status else 'status-draft' }}">
+                {{ 'Published' if event.publish_status else 'Draft' }}
+              </span>
+              <a href="{{ url_for('edit_event', event_id=event.id) }}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-edit"></i> Edit
+              </a>
+              <a href="{{ url_for('delete_event', event_id=event.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this event?')">
+                <i class="fas fa-trash"></i> Delete
+              </a>
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--gray-500);">
+          <i class="fas fa-calendar-plus" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+          <h3>No events found</h3>
+          <p>Get started by creating your first event!</p>
+          <a href="{{ url_for('add_event') }}" class="btn btn-primary" style="margin-top: 1rem;">
+            <i class="fas fa-plus"></i> Create Event
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <!-- Recent Events -->
+    <div class="recent-events">
+      <div class="section-header">
+        <h2 class="section-title">Recent Events</h2>
+      </div>
+      <div class="recent-events-list">
+        {% for event in recent_events %}
+        <div class="recent-event-item">
+          <!-- ✅ FIXED: Proper image display for recent events -->
+          <img 
+            src="{{ url_for('static', filename='uploads/' + event.image_path) if event.image_path and event.image_path != 'default_event.jpg' else url_for('static', filename='images/default_event.jpg') }}" 
+            alt="{{ event.name }}" 
+            class="recent-event-image"
+            onerror="this.src='{{ url_for('static', filename='images/default_event.jpg') }}'"
+          >
+          <div class="recent-event-content">
+            <div class="recent-event-title">{{ event.name }}</div>
+            <div class="recent-event-details">
+              {{ event.location }} • {{ event.start_date.strftime('%b %d, %Y') if event.start_date else 'Date TBD' }}
+            </div>
+          </div>
+          <a href="{{ url_for('edit_event', event_id=event.id) }}" class="btn btn-secondary btn-sm">
+            <i class="fas fa-edit"></i>
+          </a>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 2rem; color: var(--gray-500);">
+          <i class="fas fa-calendar" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+          <p>No recent events</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
   </div>
 
   <script>
-    function toggleUploadForm() {
-      const form = document.getElementById('uploadForm');
-      form.style.display = form.style.display === 'block' ? 'none' : 'block';
-    }
-    
-    // Close the upload form when clicking outside
-    document.addEventListener('click', function(event) {
-      const form = document.getElementById('uploadForm');
-      const profilePic = document.querySelector('.profile-pic');
-      
-      if (form.style.display === 'block' && event.target !== profilePic && !profilePic.contains(event.target)) {
-        form.style.display = 'none';
-      }
-    });
-    
     // Mobile menu toggle
     const menuToggle = document.querySelector('.menu-toggle');
     const sidebar = document.querySelector('.sidebar');
@@ -631,6 +720,29 @@
         setTimeout(() => msg.remove(), 1000);
       });
     }, 5000);
+    
+    // Filter events
+    function filterEvents(type, value) {
+      const url = new URL(window.location.href);
+      
+      if (value) {
+        url.searchParams.set(type, value);
+      } else {
+        url.searchParams.delete(type);
+      }
+      
+      window.location.href = url.toString();
+    }
+    
+    // Image error fallback
+    document.addEventListener('DOMContentLoaded', function() {
+      const images = document.querySelectorAll('img');
+      images.forEach(img => {
+        img.addEventListener('error', function() {
+          this.src = "{{ url_for('static', filename='images/default_event.jpg') }}";
+        });
+      });
+    });
   </script>
 </body>
 </html>

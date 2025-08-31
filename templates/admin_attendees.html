@@ -185,7 +185,7 @@
     .btn {
       padding: 0.7rem 1.5rem;
       border: none;
-      border-radius: var(--border-radius;
+      border-radius: var(--border-radius);
       font-weight: 600;
       cursor: pointer;
       transition: var(--transition);
@@ -425,6 +425,44 @@
         display: block;
         overflow-x: auto;
       }
+      
+      .attendees-table th,
+      .attendees-table td {
+        padding: 0.5rem;
+      }
+    }
+
+    /* Flash Messages */
+    .flash-messages {
+      margin-bottom: 1.5rem;
+    }
+
+    .flash-message {
+      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      transition: var(--transition);
+    }
+
+    .flash-message.success {
+      background-color: rgba(76, 201, 240, 0.2);
+      color: var(--success);
+      border-left: 4px solid var(--success);
+    }
+
+    .flash-message.danger {
+      background-color: rgba(249, 65, 68, 0.2);
+      color: var(--danger);
+      border-left: 4px solid var(--danger);
+    }
+
+    .flash-message.info {
+      background-color: rgba(67, 97, 238, 0.2);
+      color: var(--primary);
+      border-left: 4px solid var(--primary);
     }
   </style>
 </head>
@@ -441,7 +479,7 @@
     <ul class="sidebar-menu">
       <li><a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-home"></i> Dashboard</a></li>
       <li><a href="{{ url_for('add_event') }}"><i class="fas fa-calendar-plus"></i> Add Event</a></li>
-      <li><a href="{{ url_for('view_attendees') }}" class="active"><i class="fas fa-users"></i> Attendees</a></li>
+      <li><a href="{{ url_for('admin_attendees') }}" class="active"><i class="fas fa-users"></i> Attendees</a></li>
       <li><a href="#"><i class="fas fa-chart-bar"></i> Analytics</a></li>
       <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
       <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
@@ -478,7 +516,7 @@
     
     <!-- Filters Section -->
     <div class="filters-section">
-      <form method="GET" action="{{ url_for('view_attendees') }}">
+      <form method="GET" action="{{ url_for('admin_attendees') }}">
         <div class="filters-grid">
           <div class="filter-group">
             <label for="event_id">Filter by Event</label>
@@ -511,10 +549,10 @@
           <button type="submit" class="btn btn-primary">
             <i class="fas fa-filter"></i> Apply Filters
           </button>
-          <a href="{{ url_for('view_attendees') }}" class="btn btn-secondary">
+          <a href="{{ url_for('admin_attendees') }}" class="btn btn-secondary">
             <i class="fas fa-times"></i> Clear Filters
           </a>
-          <a href="{{ url_for('export_attendees', event_id=current_event_id, search=search_query, status=status_filter) }}" class="btn btn-success">
+          <a href="{{ url_for('export_attendees_csv', event_id=current_event_id, search=search_query, status=status_filter) }}" class="btn btn-success">
             <i class="fas fa-download"></i> Export to CSV
           </a>
         </div>
@@ -565,7 +603,7 @@
               </td>
               <td>
                 <div class="action-buttons">
-                  <form action="{{ url_for('delete_attendee', attendee_id=attendee.id) }}" method="POST" style="display: inline;">
+                  <form action="{{ url_for('delete_attendee_record', attendee_id=attendee.id) }}" method="POST" style="display: inline;">
                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this attendee?')">
                       <i class="fas fa-trash"></i> Delete
                     </button>
@@ -581,7 +619,7 @@
           <i class="fas fa-users-slash"></i>
           <h3>No attendees found</h3>
           <p>No attendees match your current filters.</p>
-          <a href="{{ url_for('view_attendees') }}" class="btn btn-primary" style="margin-top: 1rem;">
+          <a href="{{ url_for('admin_attendees') }}" class="btn btn-primary" style="margin-top: 1rem;">
             <i class="fas fa-times"></i> Clear Filters
           </a>
         </div>

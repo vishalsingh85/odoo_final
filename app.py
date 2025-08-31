@@ -30,6 +30,34 @@ app.config['MAIL_USERNAME'] = 'bsal000777@gmail.com'
 app.config['MAIL_PASSWORD'] = 'pgnjxikfhbaxshse'
 mail = Mail(app)
 
+
+from PIL import Image, ImageDraw, ImageFont
+import os
+
+def create_default_image():
+    """Create a default event image if it doesn't exist"""
+    image_path = "static/images/default_event.jpg"
+    
+    # Create directory if it doesn't exist
+    os.makedirs(os.path.dirname(image_path), exist_ok=True)
+    
+    # Create a simple default image
+    img = Image.new('RGB', (400, 300), color=(73, 109, 137))
+    d = ImageDraw.Draw(img)
+    
+    try:
+        # Try to use a font if available
+        font = ImageFont.truetype("arial.ttf", 30)
+    except:
+        # Use default font if arial is not available
+        font = ImageFont.load_default()
+    
+    d.text((100, 140), "Event Image", fill=(255, 255, 255), font=font)
+    img.save(image_path)
+    print(f"Default image created at {image_path}")
+
+# Call this function when your app starts
+create_default_image()
 # ---------------- Uploads ----------------
 UPLOAD_FOLDER = "static/uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -196,6 +224,7 @@ def dashboard():
     )
 # ✅ Admin Dashboard
 # ✅ Admin Dashboard
+# ✅ Admin Dashboard - Updated to properly fetch images
 @app.route("/admin/dashboard")
 def admin_dashboard():
     if "user" not in session or session.get("role") != "admin":
@@ -218,11 +247,12 @@ def admin_dashboard():
     cursor.execute("SELECT SUM(total_amount) as revenue FROM bookings WHERE status = 'paid'")
     total_revenue = cursor.fetchone()["revenue"] or 0
     
-    # Get events for display
+    # Get events for display - ensure we're selecting image_path
     cursor.execute("SELECT id, name, image_path, start_date, location FROM events ORDER BY created_at DESC LIMIT 5")
     recent_events = cursor.fetchall()
 
-    query = "SELECT * FROM events WHERE 1=1"
+    # Get all events with proper image paths
+    query = "SELECT id, name, image_path, start_date, end_date, location, category, publish_status FROM events WHERE 1=1"
     values = []
 
     category = request.args.get("category")
@@ -251,7 +281,6 @@ def admin_dashboard():
                          total_bookings=total_bookings,
                          total_revenue=total_revenue,
                          recent_events=recent_events)
-# ✅ Add Event
 @app.route("/admin/add_event", methods=["GET", "POST"])
 def add_event():
     if "user" not in session or session.get("role") != "admin":
@@ -757,9 +786,199 @@ def ticket_qr(booking_id):
     return send_file(buf, mimetype='image/png')
 
 # ✅ Cancel Booking Route
+# ✅ View Attendees with Search and Filters (Renamed to avoid conflict)
+# ✅ Admin Attendees Route (Properly indented)
+@app.route("/admin/attendees")
+def admin_attendees():
+    if "user" not in session or session.get("role") != "admin":
+        flash("❌ Access Denied!", "danger")
+        return redirect(url_for("login"))
 
+    event_id = request.args.get('event_id', '')
+    search = request.args.get('search', '')
+    status_filter = request.args.get('status', '')
+    
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    # Get all events for dropdown
+    cursor.execute("SELECT id, name FROM events ORDER BY start_date DESC")
+    events = cursor.fetchall()
+    
+    # Build query for attendees
+    query = """
+        SELECT a.*, e.name as event_name, 
+               CASE WHEN a.attended THEN 'Yes' ELSE 'No' END as attendance_status
+        FROM attendees a 
+        JOIN events e ON a.event_id = e.id 
+        WHERE 1=1
+    """
+    params = []
+    
+    if event_id:
+        query += " AND a.event_id = %s"
+        params.append(event_id)
+    
+    if search:
+        query += " AND (a.name LIKE %s OR a.email LIKE %s OR a.phone LIKE %s)"
+        params.extend([f"%{search}%", f"%{search}%", f"%{search}%"])
+    
+    if status_filter:
+        if status_filter == 'attended':
+            query += " AND a.attended = TRUE"
+        elif status_filter == 'not_attended':
+            query += " AND a.attended = FALSE"
+    
+    query += " ORDER BY a.id DESC"
+    
+    cursor.execute(query, params)
+    attendees = cursor.fetchall()
+    
+    cursor.close()
+    conn.close()
+    
+    return render_template("admin_attendees.html", 
+                         attendees=attendees, 
+                         events=events,
+                         current_event_id=event_id,
+                         search_query=search,
+                         status_filter=status_filter)
 
+# ✅ Export Attendees to CSV
+@app.route("/admin/attendees/export")
+def export_attendees_csv():
+    if "user" not in session or session.get("role") != "admin":
+        flash("❌ Access Denied!", "danger")
+        return redirect(url_for("login"))
 
+    event_id = request.args.get('event_id', '')
+    search = request.args.get('search', '')
+    status_filter = request.args.get('status', '')
+    
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    # Build query for attendees (same as admin_attendees)
+    query = """
+        SELECT a.*, e.name as event_name, e.start_date as event_date,
+               CASE WHEN a.attended THEN 'Yes' ELSE 'No' END as attendance_status
+        FROM attendees a 
+        JOIN events e ON a.event_id = e.id 
+        WHERE 1=1
+    """
+    params = []
+    
+    if event_id:
+        query += " AND a.event_id = %s"
+        params.append(event_id)
+    
+    if search:
+        query += " AND (a.name LIKE %s OR a.email LIKE %s OR a.phone LIKE %s)"
+        params.extend([f"%{search}%", f"%{search}%", f"%{search}%"])
+    
+    if status_filter:
+        if status_filter == 'attended':
+            query += " AND a.attended = TRUE"
+        elif status_filter == 'not_attended':
+            query += " AND a.attended = FALSE"
+    
+    query += " ORDER BY a.id DESC"
+    
+    cursor.execute(query, params)
+    attendees = cursor.fetchall()
+    
+    cursor.close()
+    conn.close()
+    
+    # Create CSV content
+    csv_content = "Event Name,Event Date,Attendee Name,Email,Phone,Gender,Total Guests,Attendance Status,Registration Date\n"
+    
+    for attendee in attendees:
+        csv_content += f"\"{attendee['event_name']}\","
+        csv_content += f"\"{attendee['event_date'].strftime('%Y-%m-%d %H:%M') if attendee['event_date'] else 'N/A'}\","
+        csv_content += f"\"{attendee['name']}\","
+        csv_content += f"\"{attendee['email']}\","
+        csv_content += f"\"{attendee['phone']}\","
+        csv_content += f"\"{attendee.get('gender', 'N/A')}\","
+        csv_content += f"\"{attendee.get('total_guest', 1)}\","
+        csv_content += f"\"{attendee['attendance_status']}\","
+        csv_content += f"\"{attendee.get('registration_date', '').strftime('%Y-%m-%d %H:%M') if attendee.get('registration_date') else 'N/A'}\"\n"
+    
+    # Create response with CSV
+    event_name = "all_events"
+    if event_id and attendees:
+        event_name = attendees[0]['event_name'].replace(" ", "_").lower()
+    
+    response = Response(
+        csv_content,
+        mimetype="text/csv",
+        headers={
+            "Content-Disposition": f"attachment; filename=attendees_{event_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+        }
+    )
+    
+    return response
+
+# ✅ Mark Attendance
+@app.route("/admin/attendee/<int:attendee_id>/attendance", methods=["POST"])
+def update_attendance(attendee_id):
+    if "user" not in session or session.get("role") != "admin":
+        return jsonify({"success": False, "message": "Unauthorized"}), 403
+    
+    data = request.get_json()
+    attended = data.get('attended', False)
+    
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    try:
+        cursor.execute(
+            "UPDATE attendees SET attended = %s WHERE id = %s",
+            (attended, attendee_id)
+        )
+        conn.commit()
+        
+        cursor.close()
+        conn.close()
+        
+        return jsonify({"success": True, "message": "Attendance updated successfully"})
+    
+    except Exception as e:
+        conn.rollback()
+        cursor.close()
+        conn.close()
+        
+        return jsonify({"success": False, "message": f"Error updating attendance: {str(e)}"}), 500
+
+# ✅ Delete Attendee
+@app.route("/admin/attendee/<int:attendee_id>/delete", methods=["POST"])
+def delete_attendee_record(attendee_id):
+    if "user" not in session or session.get("role") != "admin":
+        flash("❌ Access Denied!", "danger")
+        return redirect(url_for("login"))
+    
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    try:
+        cursor.execute("DELETE FROM attendees WHERE id = %s", (attendee_id,))
+        conn.commit()
+        
+        cursor.close()
+        conn.close()
+        
+        flash("✅ Attendee deleted successfully!", "success")
+        return redirect(url_for("admin_attendees"))
+    
+    except Exception as e:
+        conn.rollback()
+        cursor.close()
+        conn.close()
+        
+        flash(f"❌ Error deleting attendee: {str(e)}", "danger")
+        return redirect(url_for("admin_attendees"))
+    
+    
 # ---------------- Run App ----------------
 if __name__ == "__main__":
     app.run(debug=True)

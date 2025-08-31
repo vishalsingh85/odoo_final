@@ -490,6 +490,7 @@
     
     <!-- Form Container -->
     <div class="form-container">
+      <!-- ✅ FIXED: Changed form action and file input name to match Flask code -->
       <form method="POST" action="{{ url_for('add_event') }}" enctype="multipart/form-data">
         <div class="form-grid">
           <div class="form-group">
@@ -504,12 +505,12 @@
           
           <div class="form-group">
             <label for="latitude">Latitude</label>
-            <input type="text" id="latitude" name="latitude" placeholder="Ex: 28.6139" required>
+            <input type="text" id="latitude" name="latitude" placeholder="Ex: 28.6139">
           </div>
           
           <div class="form-group">
             <label for="longitude">Longitude</label>
-            <input type="text" id="longitude" name="longitude" placeholder="Ex: 77.2090" required>
+            <input type="text" id="longitude" name="longitude" placeholder="Ex: 77.2090">
           </div>
           
           <div class="form-group">
@@ -528,9 +529,12 @@
               <option value="">-- Select Category --</option>
               <option value="Music">🎶 Music</option>
               <option value="Sports">⚽ Sports</option>
-              <option value="Exhibition">🎨 Exhibition</option>
-              <option value="Conference">💼 Conference</option>
-              <option value="Workshop">🛠 Workshop</option>
+              <option value="Arts">🎨 Arts & Culture</option>
+              <option value="Business">💼 Business</option>
+              <option value="Education">📚 Education</option>
+              <option value="Technology">💻 Technology</option>
+              <option value="Food">🍕 Food & Drink</option>
+              <option value="Health">💪 Health & Wellness</option>
             </select>
           </div>
           
@@ -544,6 +548,16 @@
             <input type="datetime-local" id="registration_end" name="registration_end" required>
           </div>
           
+          <div class="form-group">
+            <label for="organizer_name">Organizer Name</label>
+            <input type="text" id="organizer_name" name="organizer_name" placeholder="Enter organizer name" value="EventHive">
+          </div>
+          
+          <div class="form-group">
+            <label for="organizer_contact">Organizer Contact</label>
+            <input type="text" id="organizer_contact" name="organizer_contact" placeholder="Enter contact info" value="contact@eventhive.com">
+          </div>
+          
           <div class="switch-container">
             <label class="switch">
               <input type="checkbox" name="publish_status" id="publishSwitch" checked>
@@ -554,11 +568,12 @@
         </div>
         
         <!-- Image Upload Section -->
+        <!-- ✅ FIXED: Changed input name from "event_image" to "image" to match Flask code -->
         <div class="form-group">
-          <label for="event_image">Event Image</label>
+          <label for="image">Event Image</label>
           <div class="file-upload">
-            <input type="file" id="event_image" name="event_image" class="file-upload-input" accept="image/*">
-            <label for="event_image" class="file-upload-label">
+            <input type="file" id="image" name="image" class="file-upload-input" accept="image/*" required>
+            <label for="image" class="file-upload-label">
               <i class="fas fa-cloud-upload-alt file-upload-icon"></i>
               <span class="file-upload-text">Click to upload or drag and drop<br><strong>PNG, JPG, GIF</strong> up to 5MB</span>
             </label>
@@ -635,12 +650,13 @@
     }
     
     // Image preview functionality
-    const eventImageInput = document.getElementById('event_image');
+    // ✅ FIXED: Changed ID from 'event_image' to 'image'
+    const imageInput = document.getElementById('image');
     const imagePreview = document.getElementById('imagePreview');
     const previewImage = document.getElementById('previewImage');
     
-    if (eventImageInput) {
-      eventImageInput.addEventListener('change', function() {
+    if (imageInput) {
+      imageInput.addEventListener('change', function() {
         const file = this.files[0];
         if (file) {
           const reader = new FileReader();
@@ -679,13 +695,13 @@
       });
       
       function highlight() {
-        fileUploadLabel.style.borderColor = var(--primary);
-        fileUploadLabel.style.backgroundColor = rgba(67, 97, 238, 0.1);
+        fileUploadLabel.style.borderColor = '#4361ee';
+        fileUploadLabel.style.backgroundColor = 'rgba(67, 97, 238, 0.1)';
       }
       
       function unhighlight() {
-        fileUploadLabel.style.borderColor = var(--gray-300);
-        fileUploadLabel.style.backgroundColor = var(--gray-100);
+        fileUploadLabel.style.borderColor = '#dee2e6';
+        fileUploadLabel.style.backgroundColor = '#f8f9fa';
       }
       
       fileUploadLabel.addEventListener('drop', handleDrop, false);
@@ -693,13 +709,40 @@
       function handleDrop(e) {
         const dt = e.dataTransfer;
         const files = dt.files;
-        eventImageInput.files = files;
+        imageInput.files = files;
         
         // Trigger change event
         const event = new Event('change');
-        eventImageInput.dispatchEvent(event);
+        imageInput.dispatchEvent(event);
       }
     }
+
+    // Set default datetime values to current time
+    window.addEventListener('DOMContentLoaded', function() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      
+      const datetimeLocal = `${year}-${month}-${day}T${hours}:${minutes}`;
+      
+      // Set default values for datetime fields
+      document.getElementById('start_date').value = datetimeLocal;
+      document.getElementById('end_date').value = datetimeLocal;
+      document.getElementById('registration_start').value = datetimeLocal;
+      
+      // Set registration end to 1 day before event start
+      const regEndDate = new Date(now);
+      regEndDate.setDate(regEndDate.getDate() - 1);
+      const regEndYear = regEndDate.getFullYear();
+      const regEndMonth = String(regEndDate.getMonth() + 1).padStart(2, '0');
+      const regEndDay = String(regEndDate.getDate()).padStart(2, '0');
+      const regEndDatetimeLocal = `${regEndYear}-${regEndMonth}-${regEndDay}T${hours}:${minutes}`;
+      
+      document.getElementById('registration_end').value = regEndDatetimeLocal;
+    });
   </script>
 </body>
 </html>
