@@ -100,12 +100,12 @@ The MVP is designed to deliver an end-to-end usable product with essential featu
 ---
 
 ## 🛠 Tech Stack
-- *Frontend:* React.js (responsive web app).  
-- *Backend:* Node.js / Express.  
-- *Database:* MongoDB / PostgreSQL.  
-- *Payments:* Stripe / Razorpay.  
-- *Auth:* Email/OTP or Google OAuth.  
-- *Notifications:* Email (Nodemailer), SMS/WhatsApp (Twilio/Firebase).  
+- *Frontend:* HTML CSS JS (responsive web app).  
+- *Backend:* Flask Python
+- *Database:* Mysql
+- *Payments:* Stripe / Razorpay / UPI / Wallet 
+- *Auth:* Email/OTP 
+- *Notifications:* Email(FOR TICKET BOOKED AND OTP)
 
 ---
 
@@ -118,12 +118,8 @@ The MVP is designed to deliver an end-to-end usable product with essential featu
 
 ---
 
-## 📅 Roadmap (Post-MVP)
-- Rich media uploads (images/videos).  
-- Guest checkout flow.  
-- AI-based event recommendations.  
-- Advanced analytics & insights.  
-- Native mobile apps.  
+## 📅 VIDEO LINK
+- 
 
 ---
 
