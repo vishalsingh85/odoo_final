@@ -43,7 +43,7 @@ The MVP is designed to deliver an end-to-end usable product with essential featu
 
 ### 4. Ticket Delivery
 - Auto-generate tickets with QR/barcode.  
-- Delivery via *Email (PDF)* or *WhatsApp API (Twilio)*.  
+- Delivery via *Email (PDF)*   
 - Attendee dashboard → Download ticket anytime.  
 
 ---
@@ -119,7 +119,6 @@ The MVP is designed to deliver an end-to-end usable product with essential featu
 ---
 
 ## 📅 VIDEO LINK
-- 
 
 ---
 
